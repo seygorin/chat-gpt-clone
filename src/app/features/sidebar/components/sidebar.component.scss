@@ -1,0 +1,105 @@
+.group\/scrollport {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.3) transparent;
+}
+
+.group\/scrollport::-webkit-scrollbar {
+  width: 6px;
+}
+
+.group\/scrollport::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.group\/scrollport::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.3);
+  border-radius: 3px;
+}
+
+.group\/scrollport::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 0.5);
+}
+
+.menu-item {
+  position: relative;
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateX(1px);
+  }
+
+  &:focus {
+    outline: 2px solid rgba(59, 130, 246, 0.5);
+    outline-offset: 2px;
+  }
+}
+
+.menu-item.hoverable {
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(156, 163, 175, 0.1);
+  }
+}
+
+.menu-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgb(107, 114, 128);
+
+  .dark & {
+    color: rgb(156, 163, 175);
+  }
+}
+
+.menu-item-trailing-btn {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+
+  .group:hover & {
+    opacity: 1;
+  }
+
+  &:hover {
+    background-color: rgba(156, 163, 175, 0.2);
+  }
+}
+
+kbd {
+  display: inline-block;
+  padding: 0.125rem 0.25rem;
+  font-size: 0.75rem;
+  font-family:
+    ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+  background-color: rgb(229, 231, 235);
+  border: 1px solid rgb(209, 213, 219);
+  border-radius: 0.25rem;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+
+  .dark & {
+    background-color: rgb(55, 65, 81);
+    border-color: rgb(75, 85, 99);
+    color: rgb(209, 213, 219);
+  }
+}
+
+.menu-item.bg-gray-200,
+.menu-item.dark\:bg-gray-700 {
+  background-color: rgb(229, 231, 235);
+
+  .dark & {
+    background-color: rgb(55, 65, 81);
+  }
+}
+
+@media (max-width: 768px) {
+  .group\/scrollport {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 40;
+    width: 20rem;
+  }
+}

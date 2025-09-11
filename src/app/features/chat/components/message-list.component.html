@@ -1,0 +1,62 @@
+<div class="h-full overflow-y-auto p-4 space-y-6" #messageContainer>
+  @for (message of messages(); track message.id) {
+    <div class="message-bubble animate-fade-in-up" [class]="getMessageClasses(message)">
+      <div class="flex items-start space-x-3">
+        <div class="flex-shrink-0">
+          <div class="avatar" [class]="getAvatarClasses(message.role)">
+            @if (message.role === 'user') {
+              <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fill-rule="evenodd"
+                  d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            } @else {
+              <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            }
+          </div>
+        </div>
+
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center space-x-2 mb-2">
+            <span class="text-sm font-semibold text-gray-900 dark:text-gray-100">
+              {{ message.role === 'user' ? 'You' : 'Assistant' }}
+            </span>
+            @if (showTimestamps()) {
+              <span class="text-xs text-gray-500 dark:text-gray-400">
+                {{ formatTime(message.timestamp) }}
+              </span>
+            }
+          </div>
+          <div class="text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed">
+            {{ message.content }}
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (isTyping()) {
+    <div class="message-bubble message-assistant animate-fade-in-up">
+      <div class="flex items-center space-x-3">
+        <div class="avatar avatar-assistant">
+          <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <div class="flex items-center space-x-2">
+          <span class="text-sm font-semibold text-gray-900 dark:text-gray-100">Assistant</span>
+          <span class="text-gray-600 dark:text-gray-400 text-sm">is typing</span>
+          <div class="typing-indicator">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>
