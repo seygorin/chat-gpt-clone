@@ -40,3 +40,32 @@ export function isApiResponse<T>(obj: unknown): obj is ApiResponse<T> {
     'data' in obj
   );
 }
+
+export interface GeminiConfig {
+  temperature?: number;
+  maxOutputTokens?: number;
+  topP?: number;
+  topK?: number;
+  thinkingBudget?: number;
+}
+
+export interface GeminiRequest {
+  model: string;
+  contents: string;
+  config?: GeminiConfig;
+}
+
+export interface GeminiResponse {
+  text: string;
+  usage?: {
+    promptTokens: number;
+    candidatesTokens: number;
+    totalTokens: number;
+  };
+}
+
+export interface GeminiError {
+  message: string;
+  code: number;
+  status: string;
+}

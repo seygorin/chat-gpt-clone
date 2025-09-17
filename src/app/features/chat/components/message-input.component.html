@@ -5,10 +5,27 @@
     (keydown)="onKeyDown($event)"
     placeholder="Message ChatGPT..."
     class="chat-input"
+    [class.pl-12]="true"
     [class.pr-12]="isMobile()"
     rows="1"
     [disabled]="isLoading()"
   ></textarea>
+
+  <button
+    (click)="openSettingsModal()"
+    class="settings-button absolute left-3 bottom-3 p-2 transition-all duration-200 bg-transparent"
+    [disabled]="isLoading()"
+    aria-label="Open settings"
+  >
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+      />
+    </svg>
+  </button>
 
   <button
     (click)="sendMessage()"
@@ -65,3 +82,8 @@
     <span>Sending message...</span>
   </div>
 }
+
+<app-settings-modal
+  [isOpen]="isSettingsModalOpen()"
+  (closeModal)="closeSettingsModal()"
+></app-settings-modal>

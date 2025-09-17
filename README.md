@@ -1,6 +1,32 @@
 # ChatGptClone
 
+A ChatGPT-like clone built with Angular, featuring real-time chat with Gemini AI API.
+
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.2.2.
+
+## Setup
+
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+2. **Configure environment:**
+   - Copy `env.config.example.ts` to `env.config.ts`
+   - Get your Gemini API key from [Google AI Studio](https://aistudio.google.com/app/apikey)
+   - Update `env.config.ts` with your API key:
+     ```typescript
+     export const envConfig = {
+       geminiApiKey: 'YOUR_ACTUAL_API_KEY_HERE',
+       production: false,
+       nodeEnv: 'development'
+     };
+     ```
+
+3. **Start development server:**
+   ```bash
+   npm start
+   ```
 
 ## Development server
 

@@ -1,10 +1,12 @@
-import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, Subject } from 'rxjs';
-import { takeUntil, finalize } from 'rxjs/operators';
+import { Injectable } from '@angular/core';
+import { Observable, Subject, throwError } from 'rxjs';
+import { takeUntil, finalize, catchError, retry } from 'rxjs/operators';
+import { GoogleGenAI } from '@google/genai';
 import { Message } from '../models';
+import { GeminiRequest } from '../models/api.model';
+import { environment } from '../../../environments/environment';
 
-export interface GeminiConfig {
+export interface GeminiServiceConfig {
   apiKey: string;
   model: string;
   temperature: number;
@@ -15,16 +17,23 @@ export interface GeminiConfig {
 
 @Injectable({ providedIn: 'root' })
 export class GeminiService {
-  private readonly baseUrl = 'https://generativelanguage.googleapis.com/v1beta';
   private activeRequest$ = new Subject<void>();
-  private http = inject(HttpClient);
+  private genAI: GoogleGenAI;
 
-  generateStreamResponse(messages: Message[], config: GeminiConfig): Observable<string> {
+  constructor() {
+    this.genAI = new GoogleGenAI({
+      apiKey: environment.geminiApiKey,
+    });
+  }
+
+  generateStreamResponse(messages: Message[], config: GeminiServiceConfig): Observable<string> {
     this.activeRequest$.next();
 
-    console.log('Generating response for', messages.length, 'messages with config:', config);
+    if (!this.validateConfig(config)) {
+      return throwError(() => new Error('Invalid Gemini configuration'));
+    }
 
-    return this.createMockStreamResponse();
+    return this.createRealStreamResponse(messages, config);
   }
 
   cancelActiveRequest(): void {
@@ -38,40 +47,97 @@ export class GeminiService {
     }));
   }
 
-  private createMockStreamResponse(): Observable<string> {
-    const mockResponse =
-      'This is a mock response from Gemini API. In a real implementation, this would be a streaming response from the actual API.';
-
+  private createRealStreamResponse(
+    messages: Message[],
+    config: GeminiServiceConfig
+  ): Observable<string> {
     return new Observable<string>(observer => {
-      let index = 0;
-      const interval = setInterval(() => {
-        if (index < mockResponse.length) {
-          observer.next(mockResponse[index]);
-          index++;
-        } else {
-          observer.complete();
-          clearInterval(interval);
-        }
-      }, 50);
+      const lastMessage = messages[messages.length - 1];
+      if (!lastMessage || lastMessage.role !== 'user') {
+        observer.error(new Error('No user message found'));
+        return;
+      }
 
-      return () => {
-        clearInterval(interval);
+      const request: GeminiRequest = {
+        model: config.model,
+        contents: lastMessage.content,
+        config: {
+          temperature: config.temperature,
+          maxOutputTokens: config.maxTokens,
+          topP: config.topP,
+          topK: config.topK,
+          thinkingBudget: 0,
+        },
       };
+
+      this.genAI.models
+        .generateContent(request)
+        .then(response => {
+          const text = response.text;
+          if (text) {
+            let index = 0;
+
+            const streamInterval = setInterval(() => {
+              if (index < text.length) {
+                observer.next(text[index]);
+                index++;
+              } else {
+                observer.complete();
+                clearInterval(streamInterval);
+              }
+            }, 30);
+
+            this.activeRequest$.subscribe(() => {
+              clearInterval(streamInterval);
+            });
+          } else {
+            observer.error(new Error('No response text received from Gemini'));
+          }
+        })
+        .catch(error => {
+          observer.error(this.handleGeminiError(error));
+        });
     }).pipe(
       takeUntil(this.activeRequest$),
-      finalize(() => {
-        console.log('Streaming response completed');
+      retry(2),
+      catchError(error => {
+        return throwError(() => error);
       })
     );
   }
 
-  validateConfig(config: GeminiConfig): boolean {
+  private handleGeminiError(error: unknown): Error {
+    const isErrorWithStatus = (err: unknown): err is { status: number; message?: string } => {
+      return typeof err === 'object' && err !== null && 'status' in err;
+    };
+
+    if (isErrorWithStatus(error)) {
+      if (error.status === 400) {
+        return new Error('Invalid request to Gemini API. Please check your input.');
+      } else if (error.status === 401) {
+        return new Error('Invalid API key. Please check your Gemini API key.');
+      } else if (error.status === 429) {
+        return new Error('Rate limit exceeded. Please try again later.');
+      } else if (error.status >= 500) {
+        return new Error('Gemini API server error. Please try again later.');
+      }
+    }
+
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return new Error(`Gemini API error: ${message}`);
+  }
+
+  validateConfig(config: GeminiServiceConfig): boolean {
     return !!(
-      config.apiKey &&
       config.model &&
       config.temperature >= 0 &&
       config.temperature <= 1 &&
-      config.maxTokens > 0
+      config.maxTokens > 0 &&
+      config.maxTokens <= 8192 &&
+      config.topP >= 0 &&
+      config.topP <= 1 &&
+      config.topK >= 1 &&
+      config.topK <= 100
     );
   }
 }

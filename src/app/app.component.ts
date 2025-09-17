@@ -36,11 +36,9 @@ export class AppComponent implements OnInit {
     this.checkScreenSize();
     const isNowMobile = this.isMobile();
 
-    // Если перешли с десктопа на мобильный - скрыть сайдбар
     if (!wasMobile && isNowMobile) {
       this._isSidebarCollapsed.set(true);
-    }
-    else if (wasMobile && !isNowMobile) {
+    } else if (wasMobile && !isNowMobile) {
       this._isSidebarCollapsed.set(false);
     }
   }

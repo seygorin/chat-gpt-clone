@@ -2,25 +2,23 @@ import { Component, viewChild, ElementRef, inject, signal } from '@angular/core'
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../../core/services/chat.service';
-import { GeminiService } from '../../../core/services/gemini.service';
-import { SettingsService } from '../../../core/services/settings.service';
+import { SettingsModalComponent } from '../../settings/components/settings-modal.component';
 
 @Component({
   selector: 'app-message-input',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, SettingsModalComponent],
   templateUrl: './message-input.component.html',
   styleUrl: './message-input.component.scss',
 })
 export class MessageInputComponent {
   private chatService = inject(ChatService);
-  private geminiService = inject(GeminiService);
-  private settingsService = inject(SettingsService);
 
   readonly messageInput = viewChild<ElementRef<HTMLTextAreaElement>>('messageInput');
 
   messageText = '';
   readonly isLoading = signal(false);
+  readonly isSettingsModalOpen = signal(false);
 
   readonly canSend = () => this.messageText.trim().length > 0 && !this.isLoading();
 
@@ -47,39 +45,9 @@ export class MessageInputComponent {
         this.chatService.createNewChat();
       }
 
-      this.chatService.addMessage({
-        content,
-        role: 'user',
-      });
+      await this.chatService.sendMessage(content);
 
-      this.chatService.setTyping(true);
-
-      const geminiConfig = this.settingsService.geminiConfig();
-      const messages = this.chatService.activeMessages();
-
-      const response$ = this.geminiService.generateStreamResponse(messages, geminiConfig);
-
-      let assistantResponse = '';
-
-      response$.subscribe({
-        next: (chunk: string) => {
-          assistantResponse += chunk;
-        },
-        complete: () => {
-          this.chatService.addMessage({
-            content: assistantResponse,
-            role: 'assistant',
-          });
-
-          this.chatService.setTyping(false);
-          this.isLoading.set(false);
-        },
-        error: error => {
-          console.error('Error generating response:', error);
-          this.chatService.setTyping(false);
-          this.isLoading.set(false);
-        },
-      });
+      this.isLoading.set(false);
     } catch (error) {
       console.error('Error sending message:', error);
       this.isLoading.set(false);
@@ -92,5 +60,13 @@ export class MessageInputComponent {
     } else {
       return 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed';
     }
+  }
+
+  openSettingsModal(): void {
+    this.isSettingsModalOpen.set(true);
+  }
+
+  closeSettingsModal(): void {
+    this.isSettingsModalOpen.set(false);
   }
 }

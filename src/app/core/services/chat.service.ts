@@ -1,8 +1,13 @@
-import { Injectable, signal, computed, effect } from '@angular/core';
+import { Injectable, signal, computed, effect, inject } from '@angular/core';
 import { Chat, Message, MessageCreate } from '../models';
+import { GeminiService, GeminiServiceConfig } from './gemini.service';
+import { SettingsService } from './settings.service';
 
 @Injectable({ providedIn: 'root' })
 export class ChatService {
+  private geminiService = inject(GeminiService);
+  private settingsService = inject(SettingsService);
+
   private _chats = signal<Chat[]>([]);
   private _activeChat = signal<Chat | null>(null);
   private _isTyping = signal<boolean>(false);
@@ -75,6 +80,85 @@ export class ChatService {
     return message;
   }
 
+  async sendMessage(content: string): Promise<void> {
+    const activeChat = this._activeChat();
+    if (!activeChat) {
+      throw new Error('No active chat to send message to');
+    }
+
+    const userMessage = this.addMessage({
+      content,
+      role: 'user',
+    });
+
+    this._isLoading.set(true);
+    this._isTyping.set(true);
+
+    try {
+      const currentSettings = this.settingsService.getCurrentSettings();
+      const geminiConfig: GeminiServiceConfig = {
+        apiKey: '',
+        model: currentSettings.gemini.model || 'gemini-2.0-flash-lite',
+        temperature: currentSettings.gemini.temperature ?? 0.7,
+        maxTokens: currentSettings.gemini.maxTokens ?? 2048,
+        topP: currentSettings.gemini.topP ?? 0.8,
+        topK: currentSettings.gemini.topK ?? 40,
+      };
+
+      const allMessages = [...activeChat.messages, userMessage];
+
+      const aiMessage = this.addMessage({
+        content: '',
+        role: 'assistant',
+      });
+
+      let accumulatedText = '';
+      this.geminiService.generateStreamResponse(allMessages, geminiConfig).subscribe({
+        next: (chunk: string) => {
+          accumulatedText += chunk;
+          this.updateLastMessage(aiMessage.id, accumulatedText);
+        },
+        complete: () => {
+          this._isLoading.set(false);
+          this._isTyping.set(false);
+        },
+        error: error => {
+          console.error('Error generating AI response:', error);
+          this.updateLastMessage(
+            aiMessage.id,
+            'Sorry, I encountered an error while generating a response. Please try again.'
+          );
+          this._isLoading.set(false);
+          this._isTyping.set(false);
+        },
+      });
+    } catch (error) {
+      console.error('Error sending message:', error);
+      this._isLoading.set(false);
+      this._isTyping.set(false);
+    }
+  }
+
+  private updateLastMessage(messageId: string, newContent: string): void {
+    const activeChat = this._activeChat();
+    if (!activeChat) return;
+
+    const updatedMessages = activeChat.messages.map(msg =>
+      msg.id === messageId ? { ...msg, content: newContent } : msg
+    );
+
+    const updatedChat: Chat = {
+      ...activeChat,
+      messages: updatedMessages,
+      updatedAt: new Date(),
+    };
+
+    this._chats.update(chats =>
+      chats.map(chat => (chat.id === activeChat.id ? updatedChat : chat))
+    );
+    this._activeChat.set(updatedChat);
+  }
+
   updateChatTitle(chatId: string, title: string): void {
     this._chats.update(chats =>
       chats.map(chat => (chat.id === chatId ? { ...chat, title, updatedAt: new Date() } : chat))
@@ -111,7 +195,6 @@ export class ChatService {
     effect(() => {
       const chats = this._chats();
       if (chats.length > 0) {
-        console.log('Auto-saving chats:', chats.length);
         this.saveToLocalStorage(chats);
       }
     });

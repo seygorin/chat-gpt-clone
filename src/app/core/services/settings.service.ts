@@ -1,9 +1,9 @@
 import { Injectable, signal, computed, effect } from '@angular/core';
-import { GeminiConfig } from './gemini.service';
+import { GeminiServiceConfig } from './gemini.service';
 
 export interface AppSettings {
   theme: 'light' | 'dark';
-  gemini: GeminiConfig;
+  gemini: GeminiServiceConfig;
   autoSave: boolean;
   showTimestamps: boolean;
 }
@@ -12,7 +12,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   theme: 'light',
   gemini: {
     apiKey: '',
-    model: 'gemini-pro',
+    model: 'gemini-2.0-flash-lite',
     temperature: 0.7,
     maxTokens: 2048,
     topP: 0.8,
@@ -48,7 +48,7 @@ export class SettingsService {
     this.applyTheme(theme);
   }
 
-  updateGeminiConfig(config: Partial<GeminiConfig>): void {
+  updateGeminiConfig(config: Partial<GeminiServiceConfig>): void {
     this._settings.update(settings => ({
       ...settings,
       gemini: {
@@ -101,7 +101,7 @@ export class SettingsService {
     }
   }
 
-	private saveToLocalStorage(settings: AppSettings): void {
+  private saveToLocalStorage(settings: AppSettings): void {
     try {
       localStorage.setItem('chat-gpt-clone-settings', JSON.stringify(settings));
     } catch (error) {
