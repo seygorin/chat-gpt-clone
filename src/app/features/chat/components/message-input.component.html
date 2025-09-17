@@ -13,7 +13,7 @@
   <button
     (click)="sendMessage()"
     [disabled]="!canSend()"
-    class="send-button-mobile absolute right-2 bottom-2 p-2 rounded-lg transition-all duration-200"
+    class="send-button-mobile absolute right-3 bottom-3 p-2 transition-all duration-200 bg-transparent"
     [class]="getSendButtonClasses()"
   >
     @if (isLoading()) {

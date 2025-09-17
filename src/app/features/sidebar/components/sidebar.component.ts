@@ -1,4 +1,13 @@
-import { Component, inject, Output, EventEmitter, HostListener } from '@angular/core';
+import {
+  Component,
+  inject,
+  Output,
+  EventEmitter,
+  HostListener,
+  Input,
+  signal,
+  Signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChatService } from '../../../core/services/chat.service';
 import { SettingsService } from '../../../core/services/settings.service';
@@ -15,13 +24,17 @@ export class SidebarComponent {
   private chatService = inject(ChatService);
   private settingsService = inject(SettingsService);
 
+  @Input() isCollapsed: Signal<boolean> = signal(false);
   @Output() closeSidebar = new EventEmitter<void>();
   @Output() toggleSidebar = new EventEmitter<void>();
+
+  private _isHoveringHome = signal(false);
 
   readonly chats = this.chatService.chats;
   readonly activeChat = this.chatService.activeChat;
   readonly hasChats = this.chatService.hasChats;
   readonly isDarkMode = this.settingsService.isDarkMode;
+  readonly isHoveringHome = this._isHoveringHome.asReadonly();
 
   @HostListener('document:keydown', ['$event'])
   handleKeyboardShortcuts(event: KeyboardEvent): void {
@@ -81,5 +94,25 @@ export class SidebarComponent {
     } else {
       return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
     }
+  }
+
+  onHomeMouseEnter(): void {
+    if (this.isCollapsed()) {
+      this._isHoveringHome.set(true);
+    }
+  }
+
+  onHomeMouseLeave(): void {
+    if (this.isCollapsed()) {
+      this._isHoveringHome.set(false);
+    }
+  }
+
+  shouldShowCollapseIcon(): boolean {
+    return this.isCollapsed() && this.isHoveringHome();
+  }
+
+  shouldShowHomeIcon(): boolean {
+    return !this.isCollapsed() || (this.isCollapsed() && !this.isHoveringHome());
   }
 }

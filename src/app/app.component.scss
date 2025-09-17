@@ -1,22 +1,7 @@
-.sidebar-toggle-btn {
-  @apply fixed top-4 left-4 z-50;
-  @apply w-9 h-9 rounded-lg;
-  @apply bg-white dark:bg-gray-800;
-  @apply border border-gray-200 dark:border-gray-700;
-  @apply shadow-lg hover:shadow-xl;
-  @apply flex items-center justify-center;
-  @apply text-gray-600 dark:text-gray-400;
-  @apply hover:text-gray-900 dark:hover:text-gray-100;
-  @apply hover:bg-gray-50 dark:hover:bg-gray-700;
-  @apply transition-all duration-200;
-  @apply focus:outline-none focus:ring-2 focus:ring-primary-500;
-
-  @apply block md:hidden;
-}
-
 .sidebar-collapsible {
   @apply transition-all duration-300 ease-in-out;
   @apply border-r border-gray-200 dark:border-gray-700;
+  @apply relative;
 
   &.sidebar-expanded {
     @apply w-72;
@@ -57,6 +42,15 @@
     .menu-label {
       @apply hidden;
     }
+
+    // Центрируем кнопки в свернутом состоянии
+    .group.menu-item {
+      @apply justify-center;
+
+      .flex.min-w-0.items-center.gap-2 {
+        @apply justify-center;
+      }
+    }
   }
 }
 
@@ -89,20 +83,6 @@
       @apply fixed top-0 left-0 z-40;
       @apply h-full;
     }
-  }
-}
-
-@media (min-width: 768px) {
-  .sidebar-toggle-btn {
-    display: none !important;
-  }
-}
-
-.dark {
-  .sidebar-toggle-btn {
-    @apply bg-gray-800 border-gray-700;
-    @apply text-gray-400 hover:text-gray-100;
-    @apply hover:bg-gray-700;
   }
 }
 

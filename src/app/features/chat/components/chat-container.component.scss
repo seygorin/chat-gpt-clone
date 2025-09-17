@@ -1,0 +1,12 @@
+.sidebar-toggle-btn-inline {
+  @apply w-9 h-9 rounded-lg;
+  @apply bg-white dark:bg-gray-800;
+  @apply border border-gray-200 dark:border-gray-700;
+  @apply shadow-sm hover:shadow-md;
+  @apply flex items-center justify-center;
+  @apply text-gray-600 dark:text-gray-400;
+  @apply hover:text-gray-900 dark:hover:text-gray-100;
+  @apply hover:bg-gray-50 dark:hover:bg-gray-700;
+  @apply transition-all duration-200;
+  @apply focus:outline-none focus:ring-2 focus:ring-primary-500;
+}

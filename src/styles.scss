@@ -62,20 +62,19 @@
     @apply rounded-2xl rounded-bl-md shadow-sm;
   }
 
-  // ChatGPT-like input
   .chat-input {
     @apply w-full px-4 py-3 rounded-3xl border border-gray-300 dark:border-gray-600;
     @apply bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm text-gray-900 dark:text-gray-100;
     @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;
     @apply placeholder-gray-500 dark:placeholder-gray-400;
     @apply transition-all duration-200 resize-none;
-    min-height: 44px;
-    max-height: 120px;
+		@apply shadow-sm hover:shadow-sm;
   }
 
   .chat-input-container {
     @apply fixed bottom-0 left-0 right-0;
     @apply p-4 z-10;
+		@apply w-full;
     @apply flex justify-center;
 
     &.sidebar-collapsed {
@@ -157,22 +156,18 @@
     @apply px-4 py-3;
   }
 
-  // ChatGPT-like welcome screen
   .welcome-screen {
     @apply flex flex-col items-center justify-center;
     @apply h-full px-4;
     @apply text-center;
-    @apply min-h-[calc(100vh-250px)];
+    @apply min-h-[calc(100vh-150px)];
     @apply relative;
 
-    // Adjust for sidebar state
     &.sidebar-collapsed {
-      @apply ml-16;
       @apply max-md:ml-0;
     }
 
     &.sidebar-expanded {
-      @apply ml-72;
       @apply max-md:ml-0;
     }
   }

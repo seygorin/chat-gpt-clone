@@ -1,4 +1,4 @@
-import { Component, inject, signal, input } from '@angular/core';
+import { Component, inject, signal, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChatService } from '../../../core/services/chat.service';
 import { MessageListComponent } from './message-list.component';
@@ -15,6 +15,8 @@ export class ChatContainerComponent {
   private chatService = inject(ChatService);
 
   readonly isSidebarCollapsed = input<boolean>(false);
+  readonly isMobile = input<boolean>(false);
+  readonly toggleSidebar = output<void>();
 
   readonly activeChat = this.chatService.activeChat;
   readonly activeMessages = this.chatService.activeMessages;
@@ -34,5 +36,9 @@ export class ChatContainerComponent {
   private getRandomPhrase(): string {
     const randomIndex = Math.floor(Math.random() * this.welcomePhrases.length);
     return this.welcomePhrases[randomIndex];
+  }
+
+  onToggleSidebar(): void {
+    this.toggleSidebar.emit();
   }
 }
