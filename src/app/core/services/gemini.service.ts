@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject, throwError } from 'rxjs';
-import { takeUntil, finalize, catchError, retry } from 'rxjs/operators';
+import { takeUntil, catchError, retry } from 'rxjs/operators';
 import { GoogleGenAI } from '@google/genai';
 import { Message } from '../models';
 import { GeminiRequest } from '../models/api.model';

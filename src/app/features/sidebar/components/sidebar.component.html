@@ -13,14 +13,7 @@
             (mouseenter)="onHomeMouseEnter()"
             (mouseleave)="onHomeMouseLeave()"
           >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-              />
-            </svg>
+            <i class="fas fa-home w-5 h-5" aria-hidden="true"></i>
           </a>
         }
         @if (shouldShowCollapseIcon()) {
@@ -31,19 +24,7 @@
             aria-label="Collapse sidebar"
             class="text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 flex h-9 w-9 items-center justify-center rounded-lg focus:outline-none disabled:opacity-50 transition-colors duration-200"
           >
-            <svg
-              class="w-5 h-5 transform rotate-180"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
-              />
-            </svg>
+            <i class="fas fa-angle-double-left w-5 h-5 transform rotate-180" aria-hidden="true"></i>
           </button>
         }
 
@@ -55,14 +36,7 @@
               aria-expanded="true"
               aria-label="Collapse sidebar"
             >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
-                />
-              </svg>
+              <i class="fas fa-angle-double-left w-5 h-5" aria-hidden="true"></i>
             </button>
           }
 
@@ -73,14 +47,7 @@
             aria-controls="stage-slideover-sidebar"
             aria-label="Close sidebar"
           >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            <i class="fas fa-times w-5 h-5" aria-hidden="true"></i>
           </button>
         </div>
       </div>
@@ -98,19 +65,7 @@
     >
       <div class="flex min-w-0 items-center gap-1.5">
         <div class="flex items-center justify-center">
-          <svg
-            class="w-4 h-4 text-gray-600 dark:text-gray-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 4v16m8-8H4"
-            />
-          </svg>
+          <i class="fas fa-plus w-4 h-4 text-gray-600 dark:text-gray-400" aria-hidden="true"></i>
         </div>
         <div class="flex min-w-0 grow items-center gap-2.5">
           @if (!isCollapsed()) {
@@ -158,23 +113,7 @@
                     aria-label="Open conversation options"
                     type="button"
                   >
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      class="text-gray-400 hover:text-red-500"
-                    >
-                      <path
-                        d="M15.498 8.50159C16.3254 8.50159 16.9959 9.17228 16.9961 9.99963C16.9961 10.8271 16.3256 11.4987 15.498 11.4987C14.6705 11.4987 14 10.8271 14 9.99963C14.0002 9.17228 14.6706 8.50159 15.498 8.50159Z"
-                      ></path>
-                      <path
-                        d="M4.49805 8.50159C5.32544 8.50159 5.99689 9.17228 5.99707 9.99963C5.99707 10.8271 5.32555 11.4987 4.49805 11.4987C3.67069 11.4985 3 10.827 3 9.99963C3.00018 9.17239 3.6708 8.50176 4.49805 8.50159Z"
-                      ></path>
-                      <path
-                        d="M10.0003 8.50159C10.8276 8.50176 11.4982 9.17239 11.4984 9.99963C11.4984 10.827 10.8277 11.4985 10.0003 11.4987C9.17283 11.4987 8.50131 10.8271 8.50131 9.99963C8.50149 9.17228 9.17294 8.50159 10.0003 8.50159Z"
-                      ></path>
-                    </svg>
+                    <i class="fas fa-ellipsis-v text-gray-400 hover:text-red-500 w-4 h-4" aria-hidden="true"></i>
                   </button>
                 </div>
               </a>
@@ -185,19 +124,7 @@
             <div
               class="flex items-center justify-center w-12 h-12 rounded-lg bg-gray-200 dark:bg-gray-700 mx-auto mb-4"
             >
-              <svg
-                class="w-6 h-6 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                />
-              </svg>
+              <i class="fas fa-comments w-6 h-6 text-gray-400" aria-hidden="true"></i>
             </div>
             <p class="text-gray-500 dark:text-gray-400 text-sm">
               No chats yet. Create your first chat to get started!
@@ -219,37 +146,13 @@
       [title]="isDarkMode() ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
     >
       <div class="flex min-w-0 items-center gap-2">
-        <div class="flex items-center justify-center">
-          @if (isDarkMode()) {
-            <svg
-              class="w-5 h-5 text-gray-600 dark:text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-              />
-            </svg>
-          } @else {
-            <svg
-              class="w-5 h-5 text-gray-600 dark:text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-              />
-            </svg>
-          }
-        </div>
+            <div class="flex items-center justify-center">
+              @if (isDarkMode()) {
+                <i class="fas fa-sun w-5 h-5 text-gray-600 dark:text-gray-400" aria-hidden="true"></i>
+              } @else {
+                <i class="fas fa-moon w-5 h-5 text-gray-600 dark:text-gray-400" aria-hidden="true"></i>
+              }
+            </div>
         <div class="min-w-0">
           <div class="flex min-w-0 grow items-center gap-2.5">
             @if (!isCollapsed()) {

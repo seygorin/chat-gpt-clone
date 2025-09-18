@@ -5,17 +5,9 @@
         <div class="flex-shrink-0">
           <div class="avatar" [class]="getAvatarClasses(message.role)">
             @if (message.role === 'user') {
-              <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fill-rule="evenodd"
-                  d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                  clip-rule="evenodd"
-                />
-              </svg>
+              <i class="fas fa-user w-5 h-5 text-white" aria-hidden="true"></i>
             } @else {
-              <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+              <i class="fas fa-robot w-5 h-5 text-white" aria-hidden="true"></i>
             }
           </div>
         </div>
@@ -42,11 +34,9 @@
   @if (isTyping()) {
     <div class="message-bubble message-assistant animate-fade-in-up">
       <div class="flex items-center space-x-3">
-        <div class="avatar avatar-assistant">
-          <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        </div>
+          <div class="avatar avatar-assistant">
+            <i class="fas fa-robot w-5 h-5 text-white" aria-hidden="true"></i>
+          </div>
         <div class="flex items-center space-x-2">
           <span class="text-sm font-semibold text-gray-900 dark:text-gray-100">Assistant</span>
           <span class="text-gray-600 dark:text-gray-400 text-sm">is typing</span>
