@@ -1,5 +1,5 @@
 <nav
-  class="relative flex h-full w-full flex-1 flex-col overflow-y-auto transition-opacity duration-500 bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 max-md:fixed max-md:top-0 max-md:left-0 max-md:z-40 max-md:w-80 p-2 pb-16"
+  class="relative flex h-full w-full flex-1 flex-col overflow-y-auto transition-opacity duration-500 bg-gray-50 dark:bg-gray-800 max-md:fixed max-md:top-0 max-md:left-0 max-md:z-40 max-md:w-72 p-2 pb-14"
   aria-label="Chat history"
 >
   <div class="bg-gray-50 dark:bg-gray-800 sticky top-0 z-30">
@@ -113,7 +113,10 @@
                     aria-label="Open conversation options"
                     type="button"
                   >
-                    <i class="fas fa-ellipsis-v text-gray-400 hover:text-red-500 w-4 h-4" aria-hidden="true"></i>
+                    <i
+                      class="fas fa-ellipsis-v text-gray-400 hover:text-red-500 w-4 h-4"
+                      aria-hidden="true"
+                    ></i>
                   </button>
                 </div>
               </a>
@@ -146,13 +149,13 @@
       [title]="isDarkMode() ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
     >
       <div class="flex min-w-0 items-center gap-2">
-            <div class="flex items-center justify-center">
-              @if (isDarkMode()) {
-                <i class="fas fa-sun w-5 h-5 text-gray-600 dark:text-gray-400" aria-hidden="true"></i>
-              } @else {
-                <i class="fas fa-moon w-5 h-5 text-gray-600 dark:text-gray-400" aria-hidden="true"></i>
-              }
-            </div>
+        <div class="flex items-center justify-center">
+          @if (isDarkMode()) {
+            <i class="fas fa-sun w-5 h-5 text-gray-600 dark:text-gray-400" aria-hidden="true"></i>
+          } @else {
+            <i class="fas fa-moon w-5 h-5 text-gray-600 dark:text-gray-400" aria-hidden="true"></i>
+          }
+        </div>
         <div class="min-w-0">
           <div class="flex min-w-0 grow items-center gap-2.5">
             @if (!isCollapsed()) {
@@ -163,6 +166,35 @@
           </div>
         </div>
       </div>
+    </div>
+    <div class="mt-4 px-2" *ngIf="currentUser() as u">
+      @if (!isCollapsed()) {
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-md flex items-center justify-center">
+            <i class="fas fa-user w-5 h-5 text-gray-600 dark:text-gray-300" aria-hidden="true"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-medium truncate">{{ u?.email }}</div>
+          </div>
+          <button
+            (click)="signOut()"
+            class="text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 h-9 w-9 items-center justify-center rounded-lg focus:outline-none disabled:opacity-50 transition-colors duration-200 hidden md:flex"
+            title="Sign out"
+          >
+            <i class="fas fa-sign-out-alt w-5 h-5" aria-hidden="true"></i>
+          </button>
+        </div>
+      } @else {
+        <div class="flex items-center justify-center">
+          <button
+            (click)="signOut()"
+            class="text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 h-9 w-9 items-center justify-center rounded-lg focus:outline-none disabled:opacity-50 transition-colors duration-200 hidden md:flex"
+            title="Sign out"
+          >
+            <i class="fas fa-sign-out-alt w-5 h-5" aria-hidden="true"></i>
+          </button>
+        </div>
+      }
     </div>
   </div>
 </nav>

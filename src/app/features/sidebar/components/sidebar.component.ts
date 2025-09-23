@@ -8,9 +8,11 @@ import {
   signal,
   Signal,
 } from '@angular/core';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ChatService } from '../../../core/services/chat.service';
 import { SettingsService } from '../../../core/services/settings.service';
+import { FirebaseService } from '../../../shared/services/firebase.service';
 import { Chat } from '../../../core/models';
 
 @Component({
@@ -23,6 +25,8 @@ import { Chat } from '../../../core/models';
 export class SidebarComponent {
   private chatService = inject(ChatService);
   private settingsService = inject(SettingsService);
+  private firebase = inject(FirebaseService);
+  private router = inject(Router);
 
   @Input() isCollapsed: Signal<boolean> = signal(false);
   @Output() closeSidebar = new EventEmitter<void>();
@@ -35,6 +39,7 @@ export class SidebarComponent {
   readonly hasChats = this.chatService.hasChats;
   readonly isDarkMode = this.settingsService.isDarkMode;
   readonly isHoveringHome = this._isHoveringHome.asReadonly();
+  readonly currentUser = this.firebase.user;
 
   @HostListener('document:keydown', ['$event'])
   handleKeyboardShortcuts(event: KeyboardEvent): void {
@@ -81,6 +86,23 @@ export class SidebarComponent {
 
   toggleSidebarHandler(): void {
     this.toggleSidebar.emit();
+  }
+
+  async signOut(): Promise<void> {
+    try {
+      await this.firebase.signOut();
+      this.router.navigate(['/login']);
+    } catch (err) {
+      console.error('Sign out failed', err);
+    }
+  }
+
+  getAvatarUrl(email?: string | null): string | null {
+    if (!email) return null;
+    const parts = email.split('@');
+    const domain = parts.length > 1 ? parts[1] : null;
+    if (!domain) return null;
+    return `https://www.google.com/s2/favicons?domain=${domain}`;
   }
 
   formatDate(date: Date): string {

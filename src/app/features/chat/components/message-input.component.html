@@ -3,33 +3,33 @@
     #messageInput
     [(ngModel)]="messageText"
     (keydown)="onKeyDown($event)"
-    placeholder="Message ChatGPT..."
+    (input)="onInput()"
+    placeholder="Ask anything"
     class="chat-input"
-    [class.pl-12]="true"
-    [class.pr-12]="isMobile()"
-    rows="1"
+    [rows]="textareaRows()"
     [disabled]="isLoading()"
   ></textarea>
 
   <button
     (click)="openSettingsModal()"
-    class="settings-button absolute left-3 bottom-3 p-2 transition-all duration-200 bg-transparent"
+    class="settings-button"
     [disabled]="isLoading()"
     aria-label="Open settings"
   >
-    <i class="fas fa-gear w-5 h-5" aria-hidden="true"></i>
+    <i class="fas fa-plus w-4 h-4" aria-hidden="true"></i>
   </button>
 
   <button
     (click)="sendMessage()"
     [disabled]="!canSend()"
-    class="send-button-mobile absolute right-3 bottom-3 p-2 transition-all duration-200 bg-transparent"
+    class="send-button-mobile"
     [class]="getSendButtonClasses()"
+    aria-label="Send message"
   >
     @if (isLoading()) {
-      <i class="fas fa-spinner fa-spin w-5 h-5" aria-hidden="true"></i>
+      <i class="fas fa-spinner fa-spin w-5 h-5 text-white" aria-hidden="true"></i>
     } @else {
-      <i class="fas fa-paper-plane w-5 h-5" aria-hidden="true"></i>
+      <i class="fas fa-arrow-up w-5 h-5 text-white" aria-hidden="true"></i>
     }
   </button>
 </div>

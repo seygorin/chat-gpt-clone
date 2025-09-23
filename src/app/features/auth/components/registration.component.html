@@ -1,0 +1,50 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
+  <div class="w-full max-w-md bg-white dark:bg-gray-900 rounded-2xl shadow-md p-8 lg:p-10">
+    <h1 class="text-2xl font-semibold text-gray-900 dark:text-gray-100">Create an account</h1>
+    <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">
+      Create an account to save conversations and access advanced features.
+    </p>
+
+    <form (submit)="onSignUp($event)" class="mt-6">
+      <label
+        for="emailInput"
+        class="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1"
+        >Email address</label
+      >
+      <input
+        id="emailInput"
+        type="email"
+        name="email"
+        required
+        autocomplete="email"
+        class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="you@example.com"
+      />
+
+      <label
+        for="passwordInput"
+        class="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1 mt-4"
+        >Password</label
+      >
+      <div class="relative">
+        <input
+          id="passwordInput"
+          type="password"
+          name="password"
+          required
+          autocomplete="new-password"
+          class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Create a password"
+        />
+        <i class="fas fa-lock absolute right-4 top-4 text-gray-400" aria-hidden="true"></i>
+      </div>
+
+      <button
+        type="submit"
+        class="mt-4 w-full bg-black dark:bg-white text-white dark:text-black font-medium py-3 rounded-lg"
+      >
+        Create account
+      </button>
+    </form>
+  </div>
+</div>

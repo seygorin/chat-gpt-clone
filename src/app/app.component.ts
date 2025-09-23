@@ -35,10 +35,11 @@ export class AppComponent implements OnInit {
       this._isSidebarCollapsed.set(true);
     }
 
-    this._isLoginRoute.set(this.router.url === '/login');
+    const isAuthPath = (url: string) => url.startsWith('/login') || url.startsWith('/register');
+    this._isLoginRoute.set(isAuthPath(this.router.url));
     this.router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe(ev => {
       if (ev instanceof NavigationEnd) {
-        this._isLoginRoute.set(ev.url === '/login');
+        this._isLoginRoute.set(isAuthPath(ev.url));
       }
     });
   }
