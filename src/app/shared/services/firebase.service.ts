@@ -10,6 +10,8 @@ import {
   GoogleAuthProvider,
   User,
   Auth,
+  setPersistence,
+  browserLocalPersistence,
 } from 'firebase/auth';
 import {
   getFirestore,
@@ -54,7 +56,9 @@ export class FirebaseService {
   private firestore: Firestore;
 
   private _user = signal<User | null>(null);
+  private _isAuthLoading = signal<boolean>(true);
   readonly user = this._user.asReadonly();
+  readonly isAuthLoading = this._isAuthLoading.asReadonly();
 
   constructor() {
     const firebaseConfig = envConfig.firebase as FirebaseOptions;
@@ -62,9 +66,20 @@ export class FirebaseService {
     this.auth = getAuth(this.app);
     this.firestore = getFirestore(this.app);
 
+    this.initializeAuthPersistence();
+
     onAuthStateChanged(this.auth, user => {
       this._user.set(user ?? null);
+      this._isAuthLoading.set(false);
     });
+  }
+
+  private async initializeAuthPersistence(): Promise<void> {
+    try {
+      await setPersistence(this.auth, browserLocalPersistence);
+    } catch (error) {
+      console.warn('Failed to set auth persistence:', error);
+    }
   }
 
   async signInWithEmail(email: string, password: string) {

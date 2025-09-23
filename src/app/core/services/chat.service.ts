@@ -197,6 +197,12 @@ export class ChatService {
   private initializeFirebaseSync(): void {
     effect(async () => {
       const user = this.firebaseService.user();
+      const isAuthLoading = this.firebaseService.isAuthLoading();
+
+      if (isAuthLoading) {
+        return;
+      }
+
       if (user) {
         await this.loadChatsFromFirebase();
       } else {

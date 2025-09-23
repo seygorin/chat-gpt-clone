@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { ChatService } from './core/services/chat.service';
 import { SettingsService } from './core/services/settings.service';
+import { FirebaseService } from './shared/services/firebase.service';
 import { SidebarComponent } from './features/sidebar';
 import { ChatContainerComponent } from './features/chat';
 import { filter } from 'rxjs/operators';
@@ -17,6 +18,7 @@ import { filter } from 'rxjs/operators';
 export class AppComponent implements OnInit {
   private chatService = inject(ChatService);
   private settingsService = inject(SettingsService);
+  private firebaseService = inject(FirebaseService);
   private router = inject(Router);
 
   private _isSidebarCollapsed = signal(false);
@@ -27,6 +29,9 @@ export class AppComponent implements OnInit {
 
   private _isLoginRoute = signal(false);
   readonly isLoginRoute = this._isLoginRoute.asReadonly();
+
+  readonly isAuthLoading = this.firebaseService.isAuthLoading;
+  readonly user = this.firebaseService.user;
 
   ngOnInit(): void {
     this.checkScreenSize();
