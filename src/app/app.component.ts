@@ -29,7 +29,6 @@ export class AppComponent implements OnInit {
   readonly isLoginRoute = this._isLoginRoute.asReadonly();
 
   ngOnInit(): void {
-    this.chatService.loadFromLocalStorage();
     this.checkScreenSize();
     if (this.isMobile()) {
       this._isSidebarCollapsed.set(true);

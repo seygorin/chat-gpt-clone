@@ -2,11 +2,13 @@ import { Injectable, signal, computed, effect, inject } from '@angular/core';
 import { Chat, Message, MessageCreate } from '../models';
 import { GeminiService, GeminiServiceConfig } from './gemini.service';
 import { SettingsService } from './settings.service';
+import { FirebaseService } from '../../shared/services/firebase.service';
 
 @Injectable({ providedIn: 'root' })
 export class ChatService {
   private geminiService = inject(GeminiService);
   private settingsService = inject(SettingsService);
+  private firebaseService = inject(FirebaseService);
 
   private _chats = signal<Chat[]>([]);
   private _activeChat = signal<Chat | null>(null);
@@ -28,10 +30,10 @@ export class ChatService {
   });
 
   constructor() {
-    this.initializeAutoSave();
+    this.initializeFirebaseSync();
   }
 
-  createChat(title = 'New Chat'): Chat {
+  async createChat(title = 'New Chat'): Promise<Chat> {
     const newChat: Chat = {
       id: this.generateId(),
       title,
@@ -40,14 +42,24 @@ export class ChatService {
       updatedAt: new Date(),
     };
 
+    try {
+      const user = this.firebaseService.user();
+      if (user) {
+        const firebaseId = await this.firebaseService.createChat(newChat);
+        newChat.id = firebaseId;
+      }
+    } catch (error) {
+      console.warn('Failed to save chat to Firebase:', error);
+    }
+
     this._chats.update(chats => [...chats, newChat]);
     this.setActiveChat(newChat);
 
     return newChat;
   }
 
-  createNewChat(): Chat {
-    return this.createChat('New Chat');
+  async createNewChat(): Promise<Chat> {
+    return await this.createChat('New Chat');
   }
 
   setActiveChat(chat: Chat | null): void {
@@ -86,10 +98,19 @@ export class ChatService {
       throw new Error('No active chat to send message to');
     }
 
+    const isFirstMessage = activeChat.messages.length === 0;
+
     const userMessage = this.addMessage({
       content,
       role: 'user',
     });
+
+    if (isFirstMessage) {
+      const newTitle = this.generateChatTitle(content);
+      await this.updateChatTitle(activeChat.id, newTitle);
+    }
+
+    this.saveCurrentChatToFirebase();
 
     this._isLoading.set(true);
     this._isTyping.set(true);
@@ -121,6 +142,7 @@ export class ChatService {
         complete: () => {
           this._isLoading.set(false);
           this._isTyping.set(false);
+          this.saveCurrentChatToFirebase();
         },
         error: error => {
           console.error('Error generating AI response:', error);
@@ -130,6 +152,7 @@ export class ChatService {
           );
           this._isLoading.set(false);
           this._isTyping.set(false);
+          this.saveCurrentChatToFirebase();
         },
       });
     } catch (error) {
@@ -159,26 +182,6 @@ export class ChatService {
     this._activeChat.set(updatedChat);
   }
 
-  updateChatTitle(chatId: string, title: string): void {
-    this._chats.update(chats =>
-      chats.map(chat => (chat.id === chatId ? { ...chat, title, updatedAt: new Date() } : chat))
-    );
-
-    const activeChat = this._activeChat();
-    if (activeChat?.id === chatId) {
-      this._activeChat.set({ ...activeChat, title, updatedAt: new Date() });
-    }
-  }
-
-  deleteChat(chatId: string): void {
-    this._chats.update(chats => chats.filter(chat => chat.id !== chatId));
-
-    const activeChat = this._activeChat();
-    if (activeChat?.id === chatId) {
-      this._activeChat.set(null);
-    }
-  }
-
   setTyping(isTyping: boolean): void {
     this._isTyping.set(isTyping);
   }
@@ -191,47 +194,113 @@ export class ChatService {
     return this._chats().find(chat => chat.id === id);
   }
 
-  private initializeAutoSave(): void {
-    effect(() => {
-      const chats = this._chats();
-      if (chats.length > 0) {
-        this.saveToLocalStorage(chats);
+  private initializeFirebaseSync(): void {
+    effect(async () => {
+      const user = this.firebaseService.user();
+      if (user) {
+        await this.loadChatsFromFirebase();
+      } else {
+        this._chats.set([]);
+        this._activeChat.set(null);
       }
     });
   }
 
-  private saveToLocalStorage(chats: Chat[]): void {
-    try {
-      localStorage.setItem('chat-gpt-clone-chats', JSON.stringify(chats));
-    } catch (error) {
-      console.error('Failed to save chats to localStorage:', error);
-    }
-  }
-
-  loadFromLocalStorage(): void {
-    try {
-      const saved = localStorage.getItem('chat-gpt-clone-chats');
-      if (saved) {
-        const chats = JSON.parse(saved);
-        const parsedChats = chats.map((chat: Record<string, unknown>) => ({
-          ...chat,
-          createdAt: new Date(chat['createdAt'] as string),
-          updatedAt: new Date(chat['updatedAt'] as string),
-          messages: (chat['messages'] as Record<string, unknown>[]).map(
-            (msg: Record<string, unknown>) => ({
-              ...msg,
-              timestamp: new Date(msg['timestamp'] as string),
-            })
-          ),
-        }));
-        this._chats.set(parsedChats);
-      }
-    } catch (error) {
-      console.error('Failed to load chats from localStorage:', error);
-    }
-  }
-
   private generateId(): string {
     return Date.now().toString(36) + Math.random().toString(36).substr(2);
+  }
+
+  private generateChatTitle(firstMessage: string): string {
+    const cleanMessage = firstMessage.trim().replace(/\s+/g, ' ');
+
+    const words = cleanMessage.split(' ');
+    const maxWords = 4;
+    const maxLength = 50;
+
+    let title = words.slice(0, maxWords).join(' ');
+
+    if (title.length > maxLength) {
+      title = title.substring(0, maxLength).trim();
+      const lastSpaceIndex = title.lastIndexOf(' ');
+      if (lastSpaceIndex > 0) {
+        title = title.substring(0, lastSpaceIndex);
+      }
+    }
+
+    return title || 'New Chat';
+  }
+
+  private async loadChatsFromFirebase(): Promise<void> {
+    try {
+      const firebaseChats = await this.firebaseService.getUserChats();
+      this._chats.set(firebaseChats);
+
+      if (firebaseChats.length > 0 && !this._activeChat()) {
+        this.setActiveChat(firebaseChats[0]);
+      }
+    } catch (error) {
+      console.error('Failed to load chats from Firebase:', error);
+    }
+  }
+
+  private async saveCurrentChatToFirebase(): Promise<void> {
+    const activeChat = this._activeChat();
+    const user = this.firebaseService.user();
+
+    if (!activeChat || !user) return;
+
+    try {
+      await this.firebaseService.updateChat(activeChat.id, {
+        title: activeChat.title,
+        messages: activeChat.messages,
+        updatedAt: new Date(),
+      });
+    } catch (error) {
+      console.warn('Failed to save chat to Firebase:', error);
+    }
+  }
+
+  async deleteChat(chatId: string): Promise<void> {
+    try {
+      const user = this.firebaseService.user();
+      if (user) {
+        await this.firebaseService.deleteChat(chatId);
+      }
+
+      this._chats.update(chats => chats.filter(chat => chat.id !== chatId));
+
+      if (this._activeChat()?.id === chatId) {
+        this._activeChat.set(null);
+      }
+    } catch (error) {
+      console.error('Failed to delete chat:', error);
+      throw error;
+    }
+  }
+
+  async updateChatTitle(chatId: string, newTitle: string): Promise<void> {
+    try {
+      const user = this.firebaseService.user();
+      if (user) {
+        await this.firebaseService.updateChat(chatId, {
+          title: newTitle,
+          updatedAt: new Date(),
+        });
+      }
+
+      this._chats.update(chats =>
+        chats.map(chat =>
+          chat.id === chatId ? { ...chat, title: newTitle, updatedAt: new Date() } : chat
+        )
+      );
+
+      const activeChat = this._activeChat();
+      if (activeChat?.id === chatId) {
+        this._activeChat.set({ ...activeChat, title: newTitle, updatedAt: new Date() });
+      }
+    } catch (error) {
+      console.error('Failed to update chat title:', error);
+      throw error;
+    }
   }
 }

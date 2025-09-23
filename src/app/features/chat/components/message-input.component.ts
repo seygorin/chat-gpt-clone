@@ -44,7 +44,7 @@ export class MessageInputComponent {
 
     this.resizeTimeout = setTimeout(() => {
       this.adjustTextareaHeight();
-    }, 10); 
+    }, 10);
   }
 
   private adjustTextareaHeight(): void {
@@ -69,11 +69,10 @@ export class MessageInputComponent {
     const scrollHeight = tempTextarea.scrollHeight;
     document.body.removeChild(tempTextarea);
 
-    const lineHeight = 24; 
-    const paddingY = 24; 
-    const minHeight = 48; 
+    const lineHeight = 24;
+    const paddingY = 24;
+    const minHeight = 48;
 
-    
     let rows = 1;
 
     if (scrollHeight > minHeight) {
@@ -98,7 +97,7 @@ export class MessageInputComponent {
 
     try {
       if (!this.chatService.hasActiveChat()) {
-        this.chatService.createNewChat();
+        await this.chatService.createNewChat();
       }
 
       await this.chatService.sendMessage(content);

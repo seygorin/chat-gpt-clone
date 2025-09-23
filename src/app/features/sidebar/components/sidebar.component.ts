@@ -49,18 +49,23 @@ export class SidebarComponent {
     }
   }
 
-  createNewChat(): void {
-    this.chatService.createChat();
+  async createNewChat(): Promise<void> {
+    await this.chatService.createNewChat();
   }
 
   selectChat(chat: Chat): void {
     this.chatService.setActiveChat(chat);
   }
 
-  deleteChat(chatId: string, event: Event): void {
+  async deleteChat(chatId: string, event: Event): Promise<void> {
     event.stopPropagation();
     if (confirm('Are you sure you want to delete this chat?')) {
-      this.chatService.deleteChat(chatId);
+      try {
+        await this.chatService.deleteChat(chatId);
+      } catch (error) {
+        console.error('Failed to delete chat:', error);
+        alert('Failed to delete chat. Please try again.');
+      }
     }
   }
 
