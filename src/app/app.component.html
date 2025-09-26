@@ -19,7 +19,7 @@
         (toggleSidebar)="toggleSidebar()"
       ></app-sidebar>
 
-      <div class="flex-1 flex flex-col relative">
+      <div class="flex-1 relative">
         <app-chat-container
           [isSidebarCollapsed]="isSidebarCollapsed()"
           [isMobile]="isMobile()"
@@ -27,5 +27,7 @@
         ></app-chat-container>
       </div>
     </div>
+
+    <app-footer></app-footer>
   </div>
 }

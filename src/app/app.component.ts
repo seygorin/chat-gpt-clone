@@ -6,12 +6,13 @@ import { SettingsService } from './core/services/settings.service';
 import { FirebaseService } from './shared/services/firebase.service';
 import { SidebarComponent } from './features/sidebar';
 import { ChatContainerComponent } from './features/chat';
+import { FooterComponent } from './shared/components';
 import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, SidebarComponent, ChatContainerComponent, RouterModule],
+  imports: [CommonModule, SidebarComponent, ChatContainerComponent, RouterModule, FooterComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })

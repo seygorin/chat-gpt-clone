@@ -3,11 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SettingsService } from '../../../core/services/settings.service';
 import { GeminiServiceConfig } from '../../../core/services/gemini.service';
-
+import { BaseModalComponent } from '../../../shared/components/base-modal.component';
 @Component({
   selector: 'app-settings-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, BaseModalComponent],
   templateUrl: './settings-modal.component.html',
   styleUrl: './settings-modal.component.scss',
 })
@@ -42,7 +42,7 @@ export class SettingsModalComponent implements OnInit, OnChanges {
     const currentSettings = this.settingsService.getCurrentSettings();
     this.settingsForm = {
       ...currentSettings.gemini,
-      model: currentSettings.gemini.model || 'gemini-2.0-flash-lite', 
+      model: currentSettings.gemini.model || 'gemini-2.0-flash-lite',
     };
   }
 

@@ -1,3 +1,14 @@
+.chat-container {
+  @apply h-screen flex flex-col;
+  @apply overflow-hidden;
+}
+
+.chat-messages-area {
+  @apply flex-1 overflow-y-auto;
+  @apply flex flex-col;
+  @apply pb-24;
+}
+
 .chat-input-container {
   @apply fixed bottom-0 left-0 right-0;
   @apply p-4 z-10;
@@ -30,6 +41,7 @@
   @apply text-center;
   @apply min-h-[calc(100vh-200px)];
   @apply relative;
+  @apply pb-24;
 
   &.sidebar-collapsed {
     @apply max-md:ml-0;

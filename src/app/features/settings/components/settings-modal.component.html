@@ -1,144 +1,145 @@
-@if (isOpen()) {
-  <div
-    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-    (click)="onBackdropClick($event)"
-    tabindex="0"
-    role="button"
-    aria-label="Close settings modal"
-    (keydown.enter)="onBackdropClick($event)"
-    (keydown.space)="onBackdropClick($event)"
-  >
-    <div
-      class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md mx-4"
-      (click)="$event.stopPropagation()"
-      tabindex="0"
-      (keydown.enter)="$event.stopPropagation()"
-      (keydown.space)="$event.stopPropagation()"
+<app-base-modal
+  [isOpen]="isOpen()"
+  [backdropAriaLabel]="'Close settings modal'"
+  [modalClasses]="'p-6'"
+  (closeModal)="onClose()"
+>
+  <div class="flex items-center justify-between mb-4">
+    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">ChatGPT Settings</h3>
+    <button
+      (click)="onClose()"
+      class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+      aria-label="Close settings"
     >
-        <div class="flex items-center justify-between mb-4">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">ChatGPT Settings</h3>
-        <button
-          (click)="onClose()"
-          class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-          aria-label="Close settings"
-        >
-          <i class="fas fa-times w-6 h-6" aria-hidden="true"></i>
-        </button>
-      </div>
-
-        <form (ngSubmit)="onSave()" class="space-y-4">
-        <div>
-          <label for="modelSelect" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Model
-          </label>
-          <select id="modelSelect"
-            [(ngModel)]="settingsForm.model"
-            name="model"
-            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-          >
-            <option value="gemini-2.5-pro">Gemini 2.5 Pro - Most powerful reasoning model</option>
-            <option value="gemini-2.5-flash">Gemini 2.5 Flash - Hybrid reasoning model</option>
-            <option value="gemini-2.5-flash-lite">
-              Gemini 2.5 Flash-Lite - Most cost effective
-            </option>
-            <option value="gemini-2.0-flash">Gemini 2.0 Flash - Balanced multimodal model</option>
-            <option value="gemini-2.0-flash-lite">
-              Gemini 2.0 Flash-Lite - Smallest and most cost effective
-            </option>
-          </select>
-        </div>
-
-        <div>
-          <label for="temperatureRange" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Temperature: {{ settingsForm.temperature }}
-          </label>
-          <input
-            id="temperatureRange"
-            type="range"
-            [(ngModel)]="settingsForm.temperature"
-            name="temperature"
-            min="0"
-            max="1"
-            step="0.1"
-            class="w-full"
-          />
-          <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
-            <span>Focused</span>
-            <span>Creative</span>
-          </div>
-        </div>
-
-        <div>
-          <label for="maxTokensInput" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Max Tokens
-          </label>
-          <input
-            id="maxTokensInput"
-            type="number"
-            [(ngModel)]="settingsForm.maxTokens"
-            name="maxTokens"
-            min="1"
-            max="8192"
-            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-          />
-        </div>
-
-        <div>
-          <label for="topPRange" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Top P: {{ settingsForm.topP }}
-          </label>
-          <input
-            id="topPRange"
-            type="range"
-            [(ngModel)]="settingsForm.topP"
-            name="topP"
-            min="0"
-            max="1"
-            step="0.1"
-            class="w-full"
-          />
-          <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
-            <span>Deterministic</span>
-            <span>Diverse</span>
-          </div>
-        </div>
-
-        <div>
-          <label for="topKRange" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Top K: {{ settingsForm.topK }}
-          </label>
-          <input
-            id="topKRange"
-            type="range"
-            [(ngModel)]="settingsForm.topK"
-            name="topK"
-            min="1"
-            max="100"
-            step="1"
-            class="w-full"
-          />
-          <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
-            <span>Focused</span>
-            <span>Broad</span>
-          </div>
-        </div>
-
-        <div class="flex space-x-3 pt-4">
-          <button
-            type="button"
-            (click)="onReset()"
-            class="flex-1 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors"
-          >
-            Reset
-          </button>
-          <button
-            type="submit"
-            class="flex-1 px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors"
-          >
-            Save
-          </button>
-        </div>
-      </form>
-    </div>
+      <i class="fas fa-times w-6 h-6" aria-hidden="true"></i>
+    </button>
   </div>
-}
+
+  <form (ngSubmit)="onSave()" class="space-y-4">
+    <div>
+      <label
+        for="modelSelect"
+        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+      >
+        Model
+      </label>
+      <select
+        id="modelSelect"
+        [(ngModel)]="settingsForm.model"
+        name="model"
+        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+      >
+        <option value="gemini-2.5-pro">Gemini 2.5 Pro - Most powerful reasoning model</option>
+        <option value="gemini-2.5-flash">Gemini 2.5 Flash - Hybrid reasoning model</option>
+        <option value="gemini-2.5-flash-lite">Gemini 2.5 Flash-Lite - Most cost effective</option>
+        <option value="gemini-2.0-flash">Gemini 2.0 Flash - Balanced multimodal model</option>
+        <option value="gemini-2.0-flash-lite">
+          Gemini 2.0 Flash-Lite - Smallest and most cost effective
+        </option>
+      </select>
+    </div>
+
+    <div>
+      <label
+        for="temperatureRange"
+        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+      >
+        Temperature: {{ settingsForm.temperature }}
+      </label>
+      <input
+        id="temperatureRange"
+        type="range"
+        [(ngModel)]="settingsForm.temperature"
+        name="temperature"
+        min="0"
+        max="1"
+        step="0.1"
+        class="w-full"
+      />
+      <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
+        <span>Focused</span>
+        <span>Creative</span>
+      </div>
+    </div>
+
+    <div>
+      <label
+        for="maxTokensInput"
+        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+      >
+        Max Tokens
+      </label>
+      <input
+        id="maxTokensInput"
+        type="number"
+        [(ngModel)]="settingsForm.maxTokens"
+        name="maxTokens"
+        min="1"
+        max="8192"
+        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+      />
+    </div>
+
+    <div>
+      <label
+        for="topPRange"
+        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+      >
+        Top P: {{ settingsForm.topP }}
+      </label>
+      <input
+        id="topPRange"
+        type="range"
+        [(ngModel)]="settingsForm.topP"
+        name="topP"
+        min="0"
+        max="1"
+        step="0.1"
+        class="w-full"
+      />
+      <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
+        <span>Deterministic</span>
+        <span>Diverse</span>
+      </div>
+    </div>
+
+    <div>
+      <label
+        for="topKRange"
+        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+      >
+        Top K: {{ settingsForm.topK }}
+      </label>
+      <input
+        id="topKRange"
+        type="range"
+        [(ngModel)]="settingsForm.topK"
+        name="topK"
+        min="1"
+        max="100"
+        step="1"
+        class="w-full"
+      />
+      <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
+        <span>Focused</span>
+        <span>Broad</span>
+      </div>
+    </div>
+
+    <div class="flex space-x-3 pt-4">
+      <button
+        type="button"
+        (click)="onReset()"
+        class="flex-1 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors"
+      >
+        Reset
+      </button>
+      <button
+        type="submit"
+        class="flex-1 px-4 py-2 text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200 rounded-md transition-colors"
+      >
+        Save
+      </button>
+    </div>
+  </form>
+</app-base-modal>

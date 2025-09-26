@@ -14,11 +14,12 @@ import { ChatService } from '../../../core/services/chat.service';
 import { SettingsService } from '../../../core/services/settings.service';
 import { FirebaseService } from '../../../shared/services/firebase.service';
 import { Chat } from '../../../core/models';
+import { DeleteChatModalComponent } from '../../chat/components/delete-chat-modal.component';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, DeleteChatModalComponent],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
 })
@@ -33,6 +34,8 @@ export class SidebarComponent {
   @Output() toggleSidebar = new EventEmitter<void>();
 
   private _isHoveringHome = signal(false);
+  private _isDeleteModalOpen = signal(false);
+  private _chatToDelete = signal<Chat | null>(null);
 
   readonly chats = this.chatService.chats;
   readonly activeChat = this.chatService.activeChat;
@@ -40,6 +43,8 @@ export class SidebarComponent {
   readonly isDarkMode = this.settingsService.isDarkMode;
   readonly isHoveringHome = this._isHoveringHome.asReadonly();
   readonly currentUser = this.firebase.user;
+  readonly isDeleteModalOpen = this._isDeleteModalOpen.asReadonly();
+  readonly chatToDelete = this._chatToDelete.asReadonly();
 
   @HostListener('document:keydown', ['$event'])
   handleKeyboardShortcuts(event: KeyboardEvent): void {
@@ -57,16 +62,31 @@ export class SidebarComponent {
     this.chatService.setActiveChat(chat);
   }
 
-  async deleteChat(chatId: string, event: Event): Promise<void> {
+  deleteChat(chatId: string, event: Event): void {
     event.stopPropagation();
-    if (confirm('Are you sure you want to delete this chat?')) {
+    const chat = this.chats().find(c => c.id === chatId);
+    if (chat) {
+      this._chatToDelete.set(chat);
+      this._isDeleteModalOpen.set(true);
+    }
+  }
+
+  async confirmDeleteChat(): Promise<void> {
+    const chat = this._chatToDelete();
+    if (chat) {
       try {
-        await this.chatService.deleteChat(chatId);
+        await this.chatService.deleteChat(chat.id);
+        this.closeDeleteModal();
       } catch (error) {
         console.error('Failed to delete chat:', error);
         alert('Failed to delete chat. Please try again.');
       }
     }
+  }
+
+  closeDeleteModal(): void {
+    this._isDeleteModalOpen.set(false);
+    this._chatToDelete.set(null);
   }
 
   toggleTheme(): void {
