@@ -32,7 +32,7 @@ export class MessageInputComponent {
   readonly canSend = () => this.messageText.trim().length > 0 && !this.isLoading();
   readonly maxRows = 20;
 
-  private resizeTimeout: number | undefined;
+  private resizeTimeout: ReturnType<typeof setTimeout> | undefined;
 
   isMobile(): boolean {
     return window.innerWidth < 768;

@@ -30,7 +30,7 @@ import {
   DocumentData,
   QueryDocumentSnapshot,
 } from 'firebase/firestore';
-import { envConfig } from '../../../../env.config';
+import { environment } from '../../../environments/environment';
 import { Chat, Message } from '../../core/models';
 
 interface FirestoreChat {
@@ -61,7 +61,7 @@ export class FirebaseService {
   readonly isAuthLoading = this._isAuthLoading.asReadonly();
 
   constructor() {
-    const firebaseConfig = envConfig.firebase as FirebaseOptions;
+    const firebaseConfig = environment.firebase as FirebaseOptions;
     this.app = initializeApp(firebaseConfig);
     this.auth = getAuth(this.app);
     this.firestore = getFirestore(this.app);

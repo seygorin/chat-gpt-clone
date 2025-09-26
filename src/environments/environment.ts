@@ -1,6 +1,7 @@
-import { envConfig } from '../../env.config';
+import { envConfig } from './env.config';
 
 export const environment = {
-  production: envConfig.production,
+  production: false,
   geminiApiKey: envConfig.geminiApiKey,
+  firebase: envConfig.firebase,
 };
