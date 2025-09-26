@@ -107,16 +107,25 @@ npm install
 
 ### 3. Environment Configuration
 
-Copy the example environment file:
+The project uses Angular's built-in environment configuration system with multiple environments:
+
+- **Development**: Used during local development (`ng serve`)
+- **Staging**: For testing in a production-like environment
+- **Production**: For the live application
+
+#### Setup for Local Development:
+
+Copy the example development environment file:
 
 ```bash
-cp env.config.example.ts env.config.ts
+cp src/environments/environment.development.example.ts src/environments/environment.development.ts
 ```
 
-Update `env.config.ts` with your configuration:
+Update `environment.development.ts` with your configuration:
 
 ```typescript
-export const envConfig = {
+export const environment = {
+  production: false,
   geminiApiKey: 'YOUR_GEMINI_API_KEY',
   firebase: {
     apiKey: 'YOUR_FIREBASE_API_KEY',
@@ -126,8 +135,6 @@ export const envConfig = {
     messagingSenderId: '123456789',
     appId: 'YOUR_APP_ID',
   },
-  production: false,
-  nodeEnv: 'development',
 };
 ```
 
@@ -136,12 +143,12 @@ export const envConfig = {
 1. Create a Firebase project at [Firebase Console](https://console.firebase.google.com)
 2. Enable Authentication (Email/Password and Google)
 3. Create a Firestore database
-4. Update your Firebase config in `env.config.ts`
+4. Update your Firebase config in `environment.development.ts`
 
 ### 5. Gemini API Setup
 
 1. Get your API key from [Google AI Studio](https://aistudio.google.com/app/apikey)
-2. Add the key to your `env.config.ts`
+2. Add the key to your `environment.development.ts`
 
 ### 6. Start Development Server
 
@@ -152,6 +159,19 @@ ng serve
 ```
 
 Navigate to `http://localhost:4200/`
+
+#### Running with Different Environments:
+
+```bash
+# Development (default)
+ng serve
+
+# Production
+ng serve --configuration=production
+
+# Staging
+ng serve --configuration=staging
+```
 
 ## Testing
 
@@ -182,8 +202,40 @@ npm run lint
 ### Build for Production
 
 ```bash
-npm run build
+# Production build
+npm run build -- --configuration=production
+# or
+ng build --configuration=production
+
+# Staging build
+ng build --configuration=staging
 ```
+
+### Deployment to Netlify
+
+This project is configured for easy deployment to Netlify. The `netlify.toml` file contains the necessary configuration:
+
+```toml
+[build]
+  command = "npm run build -- --configuration=production"
+  publish = "dist/chat-gpt-clone/browser"
+
+[build.environment]
+  NODE_VERSION = "22"
+```
+
+To deploy:
+
+1. Push your code to a Git repository
+2. Connect your repository to Netlify
+3. Configure environment variables in Netlify (Settings → Environment variables):
+   - `GEMINI_API_KEY`
+   - `FIREBASE_API_KEY`
+   - `FIREBASE_AUTH_DOMAIN`
+   - `FIREBASE_PROJECT_ID`
+   - `FIREBASE_STORAGE_BUCKET`
+   - `FIREBASE_MESSAGING_SENDER_ID`
+   - `FIREBASE_APP_ID`
 
 ## Usage
 
