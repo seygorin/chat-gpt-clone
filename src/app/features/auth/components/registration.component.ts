@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FirebaseService } from '../../../shared/services/firebase.service';
@@ -10,6 +10,7 @@ import { FooterComponent } from '../../../shared/components';
   imports: [CommonModule, RouterModule, FooterComponent],
   templateUrl: './registration.component.html',
   styleUrl: './registration.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistrationComponent {
   private firebase = inject(FirebaseService);

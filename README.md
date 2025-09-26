@@ -1,85 +1,270 @@
-# ChatGptClone
+# ChatGPT Clone
 
-A ChatGPT-like clone built with Angular, featuring real-time chat with Gemini AI API.
+A modern, full-featured ChatGPT clone built with Angular 20, featuring real-time chat with Gemini AI, Firebase authentication, and a beautiful, responsive UI.
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.2.2.
+![Angular](https://img.shields.io/badge/Angular-20.2.0-red.svg)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)
+![Firebase](https://img.shields.io/badge/Firebase-10.0.0-orange.svg)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.0-38B2AC.svg)
 
-## Setup
+## Features
 
-1. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+- **Real-time AI Chat** - Powered by Google Gemini API with streaming responses
+- **Firebase Authentication** - Email/password and Google OAuth
+- **Chat Persistence** - All conversations saved to Firestore
+- **Responsive Design** - Mobile-first approach with Tailwind CSS
+- **Dark/Light Theme** - Automatic theme switching with persistence
+- **Modern Angular** - Standalone components, Signals, and new control flow
+- **Accessibility** - Full keyboard navigation and ARIA support
+- **Real-time Updates** - Live chat synchronization across devices
 
-2. **Configure environment:**
-   - Copy `env.config.example.ts` to `env.config.ts`
-   - Get your Gemini API key from [Google AI Studio](https://aistudio.google.com/app/apikey)
-   - Update `env.config.ts` with your API key:
-     ```typescript
-     export const envConfig = {
-       geminiApiKey: 'YOUR_ACTUAL_API_KEY_HERE',
-       production: false,
-       nodeEnv: 'development'
-     };
-     ```
+## Architecture
 
-3. **Start development server:**
-   ```bash
-   npm start
-   ```
+### Tech Stack
 
-## Development server
+- **Frontend**: Angular 20 with Standalone Components
+- **State Management**: Angular Signals
+- **Styling**: Tailwind CSS with custom design tokens
+- **Backend**: Firebase (Firestore, Authentication, Storage)
+- **AI Integration**: Google Gemini API
+- **Build Tool**: Angular CLI with Vite
+- **TypeScript**: Strict mode enabled
 
-To start a local development server, run:
+### Project Structure
+
+```
+src/app/
+├── core/                    # Core business logic
+│   ├── guards/             # Route guards (Auth, Guest)
+│   ├── models/             # TypeScript interfaces
+│   └── services/           # Business services
+├── features/               # Feature modules
+│   ├── auth/               # Authentication
+│   ├── chat/               # Chat functionality
+│   ├── settings/           # User settings
+│   └── sidebar/            # Navigation sidebar
+├── shared/                 # Shared components & utilities
+│   ├── components/         # Reusable components
+│   ├── services/           # Shared services
+└── environments/           # Environment configuration
+```
+
+### Key Components
+
+- **ChatService** - Central state management with Signals
+- **FirebaseService** - Authentication and data persistence
+- **GeminiService** - AI API integration with streaming
+- **SettingsService** - User preferences and theme management
+- **BaseModalComponent** - Reusable modal system
+- **AuthGuard/GuestGuard** - Route protection
+
+### Architecture Diagram
+
+```
+┌────────────────────────────────────────────────────────────┐
+│                        Angular App                         │
+├────────────────────────────────────────────────────────────┤
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
+│  │   Auth      │  │    Chat     │  │  Settings   │         │
+│  │  Feature    │  │   Feature   │  │  Feature    │         │
+│  └─────────────┘  └─────────────┘  └─────────────┘         │
+├────────────────────────────────────────────────────────────┤
+│                    Core Services                           │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
+│  │ ChatService │  │ FirebaseSvc │  │GeminiService│         │
+│  │ (Signals)   │  │  (Auth/DB)  │  │ (AI API)    │         │
+│  └─────────────┘  └─────────────┘  └─────────────┘         │
+├────────────────────────────────────────────────────────────┤
+│                    External Services                       │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
+│  │  Firebase   │  │   Gemini    │  │   Tailwind  │         │
+│  │ (Auth/DB)   │  │    AI       │  │    CSS      │         │
+│  └─────────────┘  └─────────────┘  └─────────────┘         │
+└────────────────────────────────────────────────────────────┘
+```
+
+## Setup & Installation
+
+### Prerequisites
+
+- Node.js 20+
+- npm or yarn
+- Firebase project
+- Google AI Studio API key
+
+### 1. Clone the Repository
 
 ```bash
+git clone <repository-url>
+cd chat-gpt-clone
+```
+
+### 2. Install Dependencies
+
+```bash
+npm install
+```
+
+### 3. Environment Configuration
+
+Copy the example environment file:
+
+```bash
+cp env.config.example.ts env.config.ts
+```
+
+Update `env.config.ts` with your configuration:
+
+```typescript
+export const envConfig = {
+  geminiApiKey: 'YOUR_GEMINI_API_KEY',
+  firebase: {
+    apiKey: 'YOUR_FIREBASE_API_KEY',
+    authDomain: 'your-project.firebaseapp.com',
+    projectId: 'your-project-id',
+    storageBucket: 'your-project.appspot.com',
+    messagingSenderId: '123456789',
+    appId: 'YOUR_APP_ID',
+  },
+  production: false,
+  nodeEnv: 'development',
+};
+```
+
+### 4. Firebase Setup
+
+1. Create a Firebase project at [Firebase Console](https://console.firebase.google.com)
+2. Enable Authentication (Email/Password and Google)
+3. Create a Firestore database
+4. Update your Firebase config in `env.config.ts`
+
+### 5. Gemini API Setup
+
+1. Get your API key from [Google AI Studio](https://aistudio.google.com/app/apikey)
+2. Add the key to your `env.config.ts`
+
+### 6. Start Development Server
+
+```bash
+npm start
+# or
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Navigate to `http://localhost:4200/`
 
-## Code scaffolding
+## Testing
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### Unit Tests
 
 ```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
+npm test
+# or
 ng test
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+### E2E Tests
 
 ```bash
+npm run e2e
+# or
 ng e2e
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+### Linting
 
-## Additional Resources
+```bash
+npm run lint
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Deployment
+
+### Build for Production
+
+```bash
+npm run build
+```
+
+## Usage
+
+### Getting Started
+
+1. **Sign Up/Login** - Create an account or use Google OAuth
+2. **Start Chatting** - Type your message and get AI responses
+3. **Manage Chats** - Create new chats, delete old ones
+4. **Customize Settings** - Adjust AI parameters and theme
+
+### Keyboard Shortcuts
+
+- `Escape` - Close modals
+- `Enter` - Send message
+- `Shift + Enter` - New line in message
+
+## Development
+
+### Code Generation
+
+```bash
+# Generate a new component
+ng generate component feature-name/component-name
+
+# Generate a new service
+ng generate service core/services/service-name
+
+# Generate a new guard
+ng generate guard core/guards/guard-name
+```
+
+### Architecture Decisions
+
+#### Signals vs RxJS
+
+- **Signals** for component state and computed values
+- **RxJS** for HTTP requests and real-time streams
+- **toObservable()** to bridge between Signals and RxJS
+
+#### State Management
+
+- Centralized state in services using Signals
+- Computed values for derived state
+- Effects for side effects (navigation, persistence)
+
+#### Component Design
+
+- Standalone components for better tree-shaking
+- Feature-sliced architecture for scalability
+- Reusable components with clear APIs
+
+## Design System
+
+### Theme Support
+
+- Light and dark themes
+- Automatic system theme detection
+- Persistent theme preference
+- Smooth transitions between themes
+
+### Responsive Design
+
+- Mobile-first approach
+- Breakpoint-based layouts
+- Touch-friendly interactions
+- Optimized for all screen sizes
+
+## Security
+
+- Firebase Authentication with JWT tokens
+- Route guards for protected pages
+- Input validation and sanitization
+- Secure API key management
+- HTTPS enforcement in production
+
+## Performance
+
+- Lazy loading for route components
+- OnPush change detection strategy
+- Optimized bundle size
+- Image lazy loading
+- Efficient re-rendering with Signals
+
+**Built by [seygorin](https://github.com/seygorin) for RS School Angular Course**

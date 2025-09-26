@@ -1,4 +1,11 @@
-import { Component, viewChild, ElementRef, inject, signal } from '@angular/core';
+import {
+  Component,
+  viewChild,
+  ElementRef,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../../core/services/chat.service';
@@ -10,6 +17,7 @@ import { SettingsModalComponent } from '../../settings/components/settings-modal
   imports: [CommonModule, FormsModule, SettingsModalComponent],
   templateUrl: './message-input.component.html',
   styleUrl: './message-input.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MessageInputComponent {
   private chatService = inject(ChatService);

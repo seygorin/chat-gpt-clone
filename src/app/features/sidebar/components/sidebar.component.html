@@ -87,7 +87,17 @@
             Chats
           </h2>
 
-          @if (hasChats()) {
+          @if (isLoadingChats()) {
+            <div class="px-3 py-4">
+              <app-loading
+                [isLoading]="true"
+                text=""
+                variant="inline"
+                size="sm"
+                [showText]="true"
+              ></app-loading>
+            </div>
+          } @else if (hasChats()) {
             <div class="space-y-1 mx-2">
               @for (chat of chats(); track chat.id) {
                 <a

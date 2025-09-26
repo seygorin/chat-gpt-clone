@@ -1,4 +1,4 @@
-import { Component, inject, signal, input, output } from '@angular/core';
+import { Component, inject, signal, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChatService } from '../../../core/services/chat.service';
 import { MessageListComponent } from './message-list.component';
@@ -10,6 +10,7 @@ import { MessageInputComponent } from './message-input.component';
   imports: [CommonModule, MessageListComponent, MessageInputComponent],
   templateUrl: './chat-container.component.html',
   styleUrl: './chat-container.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChatContainerComponent {
   private chatService = inject(ChatService);

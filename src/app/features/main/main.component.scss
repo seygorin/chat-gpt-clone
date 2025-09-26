@@ -1,0 +1,111 @@
+.sidebar-collapsible {
+  @apply transition-all duration-300 ease-in-out;
+  @apply relative;
+
+  &.sidebar-expanded {
+    @apply w-64;
+    @apply max-md:w-80;
+  }
+
+  &.sidebar-collapsed {
+    @apply w-16;
+    @apply overflow-hidden;
+
+    @apply max-md:hidden;
+
+    .menu-item {
+      @apply justify-center px-2;
+
+      .truncate {
+        @apply hidden;
+      }
+
+      .trailing {
+        @apply hidden;
+      }
+
+      kbd {
+        @apply hidden;
+      }
+    }
+
+    #sidebar-header {
+      @apply justify-center;
+
+      a,
+      button {
+        @apply justify-center px-2;
+      }
+    }
+
+    .menu-label {
+      @apply hidden;
+    }
+
+    .group.menu-item {
+      @apply justify-center;
+
+      .flex.min-w-0.items-center.gap-2 {
+        @apply justify-center;
+      }
+    }
+  }
+}
+
+.main-content {
+  @apply transition-all duration-300 ease-in-out;
+
+  &.sidebar-collapsed {
+    @apply ml-16;
+    @apply max-md:ml-0;
+  }
+}
+
+.chatgpt-layout {
+  @apply min-h-screen;
+  @apply bg-white dark:bg-gray-900;
+
+  .flex-container {
+    @apply flex h-full w-full;
+  }
+
+  .main-area {
+    @apply flex-1 flex flex-col relative;
+    @apply overflow-hidden;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar-collapsible {
+    &.sidebar-expanded {
+      @apply fixed top-0 left-0 z-40;
+      @apply h-full;
+    }
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.sidebar-slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+.sidebar-slide-out {
+  animation: slideOut 0.3s ease-out;
+}

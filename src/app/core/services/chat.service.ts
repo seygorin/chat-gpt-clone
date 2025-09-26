@@ -14,11 +14,13 @@ export class ChatService {
   private _activeChat = signal<Chat | null>(null);
   private _isTyping = signal<boolean>(false);
   private _isLoading = signal<boolean>(false);
+  private _isLoadingChats = signal<boolean>(false);
 
   readonly chats = this._chats.asReadonly();
   readonly activeChat = this._activeChat.asReadonly();
   readonly isTyping = this._isTyping.asReadonly();
   readonly isLoading = this._isLoading.asReadonly();
+  readonly isLoadingChats = this._isLoadingChats.asReadonly();
 
   readonly activeMessages = computed(() => this._activeChat()?.messages || []);
   readonly chatCount = computed(() => this._chats().length);
@@ -238,6 +240,7 @@ export class ChatService {
 
   private async loadChatsFromFirebase(): Promise<void> {
     try {
+      this._isLoadingChats.set(true);
       const firebaseChats = await this.firebaseService.getUserChats();
       this._chats.set(firebaseChats);
 
@@ -246,6 +249,8 @@ export class ChatService {
       }
     } catch (error) {
       console.error('Failed to load chats from Firebase:', error);
+    } finally {
+      this._isLoadingChats.set(false);
     }
   }
 

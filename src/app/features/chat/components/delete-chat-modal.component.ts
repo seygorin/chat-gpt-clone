@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BaseModalComponent } from '../../../shared/components/base-modal.component';
 
@@ -6,6 +6,7 @@ import { BaseModalComponent } from '../../../shared/components/base-modal.compon
   selector: 'app-delete-chat-modal',
   standalone: true,
   imports: [CommonModule, BaseModalComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <app-base-modal
       [isOpen]="isOpen()"

@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from './core/guards/auth.guard';
 import { GuestGuard } from './core/guards/guest.guard';
-import { AuthProtectedComponent } from './core/guards/auth-protected.component';
 
 export const routes: Routes = [
   {
@@ -18,7 +17,10 @@ export const routes: Routes = [
       ),
     canActivate: [GuestGuard],
   },
-
-  { path: '', component: AuthProtectedComponent, canActivate: [AuthGuard] },
+  {
+    path: '',
+    loadComponent: () => import('./features/main/main.component').then(m => m.MainComponent),
+    canActivate: [AuthGuard],
+  },
   { path: '**', redirectTo: '', pathMatch: 'full' },
 ];

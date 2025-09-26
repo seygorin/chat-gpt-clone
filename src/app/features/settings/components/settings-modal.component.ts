@@ -1,4 +1,12 @@
-import { Component, inject, input, output, OnInit, OnChanges } from '@angular/core';
+import {
+  Component,
+  inject,
+  input,
+  output,
+  OnInit,
+  OnChanges,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SettingsService } from '../../../core/services/settings.service';
@@ -10,6 +18,7 @@ import { BaseModalComponent } from '../../../shared/components/base-modal.compon
   imports: [CommonModule, FormsModule, BaseModalComponent],
   templateUrl: './settings-modal.component.html',
   styleUrl: './settings-modal.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SettingsModalComponent implements OnInit, OnChanges {
   private settingsService = inject(SettingsService);

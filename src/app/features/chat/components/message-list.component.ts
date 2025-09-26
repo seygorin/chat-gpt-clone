@@ -6,6 +6,7 @@ import {
   AfterViewChecked,
   inject,
   computed,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Message } from '../../../core/models';
@@ -17,6 +18,7 @@ import { SettingsService } from '../../../core/services/settings.service';
   imports: [CommonModule],
   templateUrl: './message-list.component.html',
   styleUrl: './message-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MessageListComponent implements AfterViewChecked {
   private settingsService = inject(SettingsService);

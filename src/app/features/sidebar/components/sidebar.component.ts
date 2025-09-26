@@ -7,6 +7,7 @@ import {
   Input,
   signal,
   Signal,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -15,13 +16,15 @@ import { SettingsService } from '../../../core/services/settings.service';
 import { FirebaseService } from '../../../shared/services/firebase.service';
 import { Chat } from '../../../core/models';
 import { DeleteChatModalComponent } from '../../chat/components/delete-chat-modal.component';
+import { LoadingComponent } from '../../../shared/components';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, DeleteChatModalComponent],
+  imports: [CommonModule, DeleteChatModalComponent, LoadingComponent],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidebarComponent {
   private chatService = inject(ChatService);
@@ -40,6 +43,7 @@ export class SidebarComponent {
   readonly chats = this.chatService.chats;
   readonly activeChat = this.chatService.activeChat;
   readonly hasChats = this.chatService.hasChats;
+  readonly isLoadingChats = this.chatService.isLoadingChats;
   readonly isDarkMode = this.settingsService.isDarkMode;
   readonly isHoveringHome = this._isHoveringHome.asReadonly();
   readonly currentUser = this.firebase.user;
