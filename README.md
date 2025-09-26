@@ -123,6 +123,16 @@ cp src/environments/environment.development.example.ts src/environments/environm
 
 Update `environment.development.ts` with your configuration:
 
+#### Setup for Production:
+
+Copy the example production environment file:
+
+```bash
+cp src/environments/environment.prod.example.ts src/environments/environment.prod.ts
+```
+
+Update `environment.prod.ts` with your production configuration:
+
 ```typescript
 export const environment = {
   production: false,

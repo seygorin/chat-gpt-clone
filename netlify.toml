@@ -1,5 +1,5 @@
 [build]
-  command = "npm run build -- --configuration=production"
+  command = "npm run build && node replace-env.js"
   publish = "dist/chat-gpt-clone/browser"
 
 [build.environment]
