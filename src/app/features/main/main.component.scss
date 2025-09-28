@@ -5,12 +5,12 @@
   &.sidebar-expanded {
     @apply w-64;
     @apply max-md:w-80;
+    @apply max-md:fixed max-md:top-0 max-md:left-0 max-md:z-40 max-md:h-full;
   }
 
   &.sidebar-collapsed {
     @apply w-16;
     @apply overflow-hidden;
-
     @apply max-md:hidden;
 
     .menu-item {

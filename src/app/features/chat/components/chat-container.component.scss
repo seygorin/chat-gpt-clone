@@ -13,6 +13,7 @@
   @apply fixed bottom-0 left-0 right-0;
   @apply p-4 pb-7 z-10;
   @apply max-w-3xl mx-auto;
+  @apply transition-all duration-300 ease-in-out;
 
   &.sidebar-collapsed {
     @apply left-16;

@@ -32,8 +32,6 @@ export class CustomPreloadingStrategy implements PreloadingStrategy {
       return of(null);
     }
 
-    console.log(`Preloading route: ${route.path} (priority: ${priority})`);
-
     if (route.path) {
       this.preloadedRoutes.add(route.path);
     }
