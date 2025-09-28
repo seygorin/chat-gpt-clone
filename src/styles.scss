@@ -89,3 +89,52 @@
 .animate-fade-in-up {
   animation: fade-in-up 0.3s ease-out;
 }
+
+.lazy-image {
+  transition: opacity 0.3s ease-in-out;
+}
+
+.lazy-image-loading {
+  background-color: #f3f4f6;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.lazy-image-loaded {
+  background-color: transparent;
+}
+
+.lazy-image-error {
+  background-color: #fef2f2;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.will-change-transform {
+  will-change: transform;
+}
+
+.will-change-scroll {
+  will-change: scroll-position;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+img[loading='lazy'] {
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+img[loading='lazy'].loaded {
+  opacity: 1;
+}

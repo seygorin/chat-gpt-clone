@@ -5,55 +5,231 @@
       Create an account to save conversations and access advanced features.
     </p>
 
-    <form (submit)="onSignUp($event)" class="mt-6">
-      <label
-        for="emailInput"
-        class="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1"
-        >Email address</label
-      >
-      <input
-        id="emailInput"
-        type="email"
-        name="email"
-        required
-        autocomplete="email"
-        (input)="onEmailInput($event)"
-        [class]="
-          emailError()
-            ? 'w-full px-4 py-3 rounded-lg border border-red-500 dark:border-red-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500'
-            : 'w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500'
-        "
-        placeholder="you@example.com"
-      />
-      @if (emailError()) {
-        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ emailError() }}</p>
-      }
-
-      <label
-        for="passwordInput"
-        class="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1 mt-4"
-        >Password</label
-      >
-      <div class="relative">
+    <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" class="mt-6">
+      <div class="mb-4">
+        <label
+          for="usernameInput"
+          class="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1"
+          >Username</label
+        >
         <input
-          id="passwordInput"
-          type="password"
-          name="password"
-          required
-          autocomplete="new-password"
-          class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Create a password"
+          id="usernameInput"
+          type="text"
+          formControlName="username"
+          autocomplete="username"
+          [class]="
+            isFieldInvalid('username')
+              ? 'w-full px-4 py-3 rounded-lg border border-red-500 dark:border-red-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500'
+              : isFieldValid('username')
+                ? 'w-full px-4 py-3 rounded-lg border border-green-500 dark:border-green-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500'
+                : 'w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500'
+          "
+          placeholder="Choose a username"
+          [attr.aria-describedby]="isFieldInvalid('username') ? 'username-error' : null"
         />
-        <i class="fas fa-lock absolute right-4 top-4 text-gray-400" aria-hidden="true"></i>
+        @if (isFieldInvalid('username')) {
+          <p id="username-error" class="mt-1 text-sm text-red-600 dark:text-red-400">
+            {{ getFieldError('username') }}
+          </p>
+        }
+      </div>
+
+      <div class="mb-4">
+        <label
+          for="emailInput"
+          class="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1"
+          >Email address</label
+        >
+        <div class="relative">
+          <input
+            id="emailInput"
+            type="email"
+            formControlName="email"
+            autocomplete="email"
+            [class]="
+              isFieldInvalid('email')
+                ? 'w-full px-4 py-3 pr-10 rounded-lg border border-red-500 dark:border-red-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500'
+                : isFieldValid('email')
+                  ? 'w-full px-4 py-3 pr-10 rounded-lg border border-green-500 dark:border-green-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500'
+                  : 'w-full px-4 py-3 pr-10 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500'
+            "
+            placeholder="you@example.com"
+            [attr.aria-describedby]="isFieldInvalid('email') ? 'email-error' : null"
+          />
+          @if (isFieldPending('email')) {
+            <div class="absolute right-3 top-3">
+              <i class="fas fa-spinner fa-spin text-blue-500"></i>
+            </div>
+          }
+        </div>
+        @if (isFieldInvalid('email')) {
+          <p id="email-error" class="mt-1 text-sm text-red-600 dark:text-red-400">
+            {{ getFieldError('email') }}
+          </p>
+        }
+      </div>
+
+      <div class="mb-4">
+        <label
+          for="passwordInput"
+          class="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1"
+          >Password</label
+        >
+        <div class="relative">
+          <input
+            id="passwordInput"
+            [type]="showPassword() ? 'text' : 'password'"
+            formControlName="password"
+            autocomplete="new-password"
+            [class]="
+              isFieldInvalid('password')
+                ? 'w-full px-4 py-3 pr-10 rounded-lg border border-red-500 dark:border-red-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500'
+                : isFieldValid('password')
+                  ? 'w-full px-4 py-3 pr-10 rounded-lg border border-green-500 dark:border-green-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500'
+                  : 'w-full px-4 py-3 pr-10 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500'
+            "
+            placeholder="Create a strong password"
+            [attr.aria-describedby]="isFieldInvalid('password') ? 'password-error' : null"
+          />
+          <button
+            type="button"
+            class="absolute right-3 top-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+            (click)="togglePasswordVisibility()"
+            [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+          >
+            @if (showPassword()) {
+              <i class="fas fa-eye-slash"></i>
+            } @else {
+              <i class="fas fa-eye"></i>
+            }
+          </button>
+        </div>
+        @if (isFieldInvalid('password')) {
+          <p id="password-error" class="mt-1 text-sm text-red-600 dark:text-red-400">
+            {{ getFieldError('password') }}
+          </p>
+        }
+
+        @if (passwordControl?.value && passwordControl?.value.length > 0) {
+          <div class="mt-2">
+            <div class="text-xs text-gray-600 dark:text-gray-400 mb-1">Password strength:</div>
+            <div class="flex space-x-1">
+              @for (item of [1, 2, 3, 4]; track item) {
+                <div
+                  [class]="
+                    passwordControl?.errors?.['minLength'] || !passwordControl?.value
+                      ? 'h-1 w-full bg-gray-200 dark:bg-gray-700 rounded'
+                      : (passwordControl?.errors?.['missingUppercase'] ||
+                            passwordControl?.errors?.['missingLowercase'] ||
+                            passwordControl?.errors?.['missingNumber']) &&
+                          item <= 2
+                        ? 'h-1 w-full bg-red-400 rounded'
+                        : passwordControl?.errors?.['missingSpecialChar'] && item <= 3
+                          ? 'h-1 w-full bg-yellow-400 rounded'
+                          : 'h-1 w-full bg-green-400 rounded'
+                  "
+                ></div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="mb-4">
+        <label
+          for="confirmPasswordInput"
+          class="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1"
+          >Confirm Password</label
+        >
+        <div class="relative">
+          <input
+            id="confirmPasswordInput"
+            [type]="showConfirmPassword() ? 'text' : 'password'"
+            formControlName="confirmPassword"
+            autocomplete="new-password"
+            [class]="
+              isFieldInvalid('confirmPassword')
+                ? 'w-full px-4 py-3 pr-10 rounded-lg border border-red-500 dark:border-red-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500'
+                : isFieldValid('confirmPassword')
+                  ? 'w-full px-4 py-3 pr-10 rounded-lg border border-green-500 dark:border-green-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500'
+                  : 'w-full px-4 py-3 pr-10 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500'
+            "
+            placeholder="Confirm your password"
+            [attr.aria-describedby]="
+              isFieldInvalid('confirmPassword') ? 'confirm-password-error' : null
+            "
+          />
+          <button
+            type="button"
+            class="absolute right-3 top-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+            (click)="toggleConfirmPasswordVisibility()"
+            [attr.aria-label]="showConfirmPassword() ? 'Hide password' : 'Show password'"
+          >
+            @if (showConfirmPassword()) {
+              <i class="fas fa-eye-slash"></i>
+            } @else {
+              <i class="fas fa-eye"></i>
+            }
+          </button>
+        </div>
+        @if (isFieldInvalid('confirmPassword')) {
+          <p id="confirm-password-error" class="mt-1 text-sm text-red-600 dark:text-red-400">
+            {{ getFieldError('confirmPassword') }}
+          </p>
+        }
+      </div>
+
+      <div class="mb-6">
+        <label class="flex items-start">
+          <input
+            type="checkbox"
+            formControlName="agreeToTerms"
+            class="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            [attr.aria-describedby]="isFieldInvalid('agreeToTerms') ? 'terms-error' : null"
+          />
+          <span class="ml-2 text-sm text-gray-600 dark:text-gray-300">
+            I agree to the
+            <a href="#" class="text-blue-600 dark:text-blue-400 hover:underline"
+              >Terms of Service</a
+            >
+            and
+            <a href="#" class="text-blue-600 dark:text-blue-400 hover:underline">Privacy Policy</a>
+          </span>
+        </label>
+        @if (isFieldInvalid('agreeToTerms')) {
+          <p id="terms-error" class="mt-1 text-sm text-red-600 dark:text-red-400">
+            {{ getFieldError('agreeToTerms') }}
+          </p>
+        }
       </div>
 
       <button
         type="submit"
-        class="mt-4 w-full bg-black dark:bg-white text-white dark:text-black font-medium py-3 rounded-lg"
+        [disabled]="registrationForm.invalid || isLoading()"
+        [class]="
+          registrationForm.invalid || isLoading()
+            ? 'w-full bg-gray-400 text-white font-medium py-3 rounded-lg cursor-not-allowed opacity-50'
+            : 'w-full bg-black dark:bg-white text-white dark:text-black font-medium py-3 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors'
+        "
+        [attr.aria-label]="isLoading() ? 'Creating account...' : 'Create account'"
       >
-        Create account
+        @if (isLoading()) {
+          <span class="flex items-center justify-center">
+            <i class="fas fa-spinner fa-spin mr-3"></i>
+            Creating account...
+          </span>
+        } @else {
+          Create account
+        }
       </button>
     </form>
+
+    <p class="mt-6 text-center text-sm text-gray-600 dark:text-gray-300">
+      Already have an account?
+      <a routerLink="/login" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+        Sign in
+      </a>
+    </p>
   </div>
 </div>
 

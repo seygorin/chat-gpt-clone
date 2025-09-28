@@ -29,7 +29,7 @@ export class ChatContainerComponent {
     'Ready when you are.',
     'What are you working on?',
     "What's on your mind today?",
-    'How can I help, USERNAME?',
+    'How can I help, man?',
   ];
 
   readonly randomWelcomePhrase = signal(this.getRandomPhrase());

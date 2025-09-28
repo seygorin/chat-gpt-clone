@@ -19,6 +19,11 @@
     "lint:fix": "ng lint --fix",
     "format": "prettier --write \"src/**/*.{ts,html,css,scss,json}\"",
     "format:check": "prettier --check \"src/**/*.{ts,html,css,scss,json}\"",
+    "analyze:bundle": "ng build --configuration=production --stats-json && npx webpack-bundle-analyzer dist/chat-gpt-clone/browser/stats.json",
+    "analyze:source-map": "ng build --configuration=production --source-map && npx source-map-explorer dist/chat-gpt-clone/browser/*.js",
+    "lighthouse": "ng build --configuration=production && npx lighthouse http://localhost:4200 --output=json --output=html --output-path=./lighthouse-report",
+    "lighthouse:ci": "ng build --configuration=production && npx @lhci/cli autorun",
+    "test:performance": "ng build --configuration=production && node scripts/performance-test.js",
     "ci": "npm run lint && npm run test:ci && npm run build:prod",
     "precommit": "npm run format:check && npm run lint && npm run test:ci"
   },
