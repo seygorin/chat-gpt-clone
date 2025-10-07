@@ -1,0 +1,5 @@
+@if (isAuthLoading()) {
+  <app-loading [isLoading]="true" text="Repeersisting.." variant="overlay" size="md"></app-loading>
+} @else {
+  <router-outlet></router-outlet>
+}

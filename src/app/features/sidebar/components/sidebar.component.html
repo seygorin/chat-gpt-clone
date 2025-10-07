@@ -1,0 +1,220 @@
+<nav
+  class="relative flex h-full w-full flex-1 flex-col transition-opacity duration-500 bg-gray-50 dark:bg-gray-800 max-md:fixed max-md:top-0 max-md:left-0 max-md:z-40 max-md:w-72"
+  aria-label="Chat history"
+>
+  <div class="bg-gray-50 dark:bg-gray-800 sticky top-0 p-2">
+    <div class="px-2">
+      <div id="sidebar-header" class="h-16 flex items-center justify-between">
+        @if (shouldShowHomeIcon()) {
+          <a
+            aria-label="Home"
+            class="text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 flex h-9 w-9 items-center justify-center rounded-lg focus:outline-none disabled:opacity-50 transition-colors duration-200"
+            href="/"
+            (mouseenter)="onHomeMouseEnter()"
+            (mouseleave)="onHomeMouseLeave()"
+          >
+            <i class="fas fa-home w-5 h-5" aria-hidden="true"></i>
+          </a>
+        }
+        @if (shouldShowCollapseIcon()) {
+          <button
+            (click)="toggleSidebarHandler()"
+            (mouseenter)="onHomeMouseEnter()"
+            (mouseleave)="onHomeMouseLeave()"
+            aria-label="Collapse sidebar"
+            class="text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 flex h-9 w-9 items-center justify-center rounded-lg focus:outline-none disabled:opacity-50 transition-colors duration-200"
+          >
+            <i class="fas fa-angle-double-left w-5 h-5 transform rotate-180" aria-hidden="true"></i>
+          </button>
+        }
+
+        <div class="flex gap-1">
+          @if (!isCollapsed()) {
+            <button
+              (click)="toggleSidebarHandler()"
+              class="text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 h-9 w-9 items-center justify-center rounded-lg focus:outline-none disabled:opacity-50 transition-colors duration-200 hidden md:flex"
+              aria-expanded="true"
+              aria-label="Collapse sidebar"
+            >
+              <i class="fas fa-angle-double-left w-5 h-5" aria-hidden="true"></i>
+            </button>
+          }
+
+          <button
+            (click)="closeSidebarHandler()"
+            class="text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 flex h-9 w-9 items-center justify-center rounded-lg focus:outline-none disabled:opacity-50 transition-colors duration-200 md:hidden"
+            aria-expanded="true"
+            aria-controls="stage-slideover-sidebar"
+            aria-label="Close sidebar"
+          >
+            <i class="fas fa-times w-5 h-5" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex-1 flex flex-col min-h-0">
+    <aside class="pt-4 pb-4 bg-gray-50 dark:bg-gray-800">
+      <a
+        tabindex="0"
+        (click)="createNewChat()"
+        (keydown.enter)="createNewChat()"
+        (keydown.space)="createNewChat()"
+        class="group menu-item hoverable flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 cursor-pointer mx-2"
+        role="button"
+      >
+        <div class="flex min-w-0 items-center gap-1.5">
+          <div class="flex items-center justify-center">
+            <i class="fas fa-plus w-4 h-4 text-gray-600 dark:text-gray-400" aria-hidden="true"></i>
+          </div>
+          <div class="flex min-w-0 grow items-center gap-2.5">
+            @if (!isCollapsed()) {
+              <div class="truncate text-gray-900 dark:text-gray-100 font-medium">New chat</div>
+            }
+          </div>
+        </div>
+      </a>
+    </aside>
+
+    @if (!isCollapsed()) {
+      <div id="history" class="flex-1 overflow-y-auto">
+        <aside class="pt-2 pb-4" aria-labelledby="chat-history">
+          <h2
+            class="menu-label px-3 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+            id="chat-history"
+          >
+            Chats
+          </h2>
+
+          @if (isLoadingChats()) {
+            <div class="px-3 py-4">
+              <app-loading
+                [isLoading]="true"
+                text=""
+                variant="inline"
+                size="sm"
+                [showText]="true"
+              ></app-loading>
+            </div>
+          } @else if (hasChats()) {
+            <div class="space-y-1 mx-2">
+              @for (chat of chats(); track chat.id) {
+                <a
+                  tabindex="0"
+                  (click)="selectChat(chat)"
+                  (keydown.enter)="selectChat(chat)"
+                  (keydown.space)="selectChat(chat)"
+                  class="group menu-item hoverable flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 cursor-pointer"
+                  [class.bg-gray-200]="activeChat()?.id === chat.id"
+                  [class.dark:bg-gray-700]="activeChat()?.id === chat.id"
+                  role="button"
+                  [title]="chat.title"
+                >
+                  <div class="flex min-w-0 grow items-center gap-2.5">
+                    <div class="truncate text-gray-900 dark:text-gray-100 text-sm">
+                      {{ chat.title }}
+                    </div>
+                  </div>
+                  <div class="trailing highlight text-gray-500 dark:text-gray-400">
+                    <button
+                      tabindex="0"
+                      (click)="deleteChat(chat.id, $event)"
+                      class="menu-item-trailing-btn p-1 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200 opacity-0 group-hover:opacity-100"
+                      aria-label="Open conversation options"
+                      type="button"
+                    >
+                      <i
+                        class="fas fa-ellipsis-v text-gray-400 hover:text-red-500 w-4 h-4"
+                        aria-hidden="true"
+                      ></i>
+                    </button>
+                  </div>
+                </a>
+              }
+            </div>
+          } @else {
+            <div class="text-center py-8 px-3">
+              <div
+                class="flex items-center justify-center w-12 h-12 rounded-lg bg-gray-200 dark:bg-gray-700 mx-auto mb-4"
+              >
+                <i class="fas fa-comments w-6 h-6 text-gray-400" aria-hidden="true"></i>
+              </div>
+              <p class="text-gray-500 dark:text-gray-400 text-sm">
+                No chats yet. Create your first chat to get started!
+              </p>
+            </div>
+          }
+        </aside>
+      </div>
+    }
+  </div>
+
+  <div class="bg-gray-50 dark:bg-gray-800 py-3 mt-auto">
+    <div
+      tabindex="0"
+      (click)="toggleTheme()"
+      (keydown.enter)="toggleTheme()"
+      (keydown.space)="toggleTheme()"
+      class="group menu-item hoverable flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 cursor-pointer mx-2"
+      role="button"
+      [title]="isDarkMode() ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
+    >
+      <div class="flex min-w-0 items-center gap-2">
+        <div class="flex items-center justify-center">
+          @if (isDarkMode()) {
+            <i class="fas fa-sun w-5 h-5 text-gray-600 dark:text-gray-400" aria-hidden="true"></i>
+          } @else {
+            <i class="fas fa-moon w-5 h-5 text-gray-600 dark:text-gray-400" aria-hidden="true"></i>
+          }
+        </div>
+        <div class="min-w-0">
+          <div class="flex min-w-0 grow items-center gap-2.5">
+            @if (!isCollapsed()) {
+              <div class="truncate text-gray-900 dark:text-gray-100 text-sm">
+                {{ isDarkMode() ? 'Light Mode' : 'Dark Mode' }}
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-3 mx-2" *ngIf="currentUser() as u">
+      @if (!isCollapsed()) {
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-md flex items-center justify-center">
+            <i class="fas fa-user w-5 h-5 text-gray-600 dark:text-gray-300" aria-hidden="true"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-medium truncate">{{ u?.email }}</div>
+          </div>
+          <button
+            (click)="signOut()"
+            class="text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 h-9 w-9 items-center justify-center rounded-lg focus:outline-none disabled:opacity-50 transition-colors duration-200"
+            title="Sign out"
+          >
+            <i class="fas fa-sign-out-alt w-5 h-5" aria-hidden="true"></i>
+          </button>
+        </div>
+      } @else {
+        <div class="flex items-center justify-center">
+          <button
+            (click)="signOut()"
+            class="text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 h-9 w-9 items-center justify-center rounded-lg focus:outline-none disabled:opacity-50 transition-colors duration-200"
+            title="Sign out"
+          >
+            <i class="fas fa-sign-out-alt w-5 h-5" aria-hidden="true"></i>
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+</nav>
+
+<app-delete-chat-modal
+  [isOpen]="isDeleteModalOpen()"
+  [chatTitle]="chatToDelete()?.title || ''"
+  (closeModal)="closeDeleteModal()"
+  (confirmDelete)="confirmDeleteChat()"
+></app-delete-chat-modal>

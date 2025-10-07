@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    "bradlc.vscode-tailwindcss",
+    "ms-vscode.vscode-typescript-next",
+    "angular.ng-template",
+    "esbenp.prettier-vscode"
+  ]
+}

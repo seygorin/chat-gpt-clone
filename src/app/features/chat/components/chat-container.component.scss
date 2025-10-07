@@ -1,0 +1,76 @@
+.chat-container {
+  @apply h-screen flex flex-col;
+  @apply overflow-hidden;
+}
+
+.chat-messages-area {
+  @apply flex-1 overflow-y-auto;
+  @apply flex flex-col;
+  @apply pb-24;
+}
+
+.chat-input-container {
+  @apply fixed bottom-0 left-0 right-0;
+  @apply p-4 pb-7 z-10;
+  @apply max-w-3xl mx-auto;
+  @apply transition-all duration-300 ease-in-out;
+
+  &.sidebar-collapsed {
+    @apply left-16;
+    @apply max-md:left-0;
+  }
+
+  &.sidebar-expanded {
+    @apply left-72;
+    @apply max-md:left-0;
+  }
+}
+
+.welcome-input {
+  @apply max-w-3xl mx-auto;
+  @apply w-full;
+}
+
+.chat-header {
+  @apply bg-white dark:bg-gray-900;
+  @apply px-4 py-3;
+}
+
+.welcome-screen {
+  @apply flex flex-col items-center justify-center;
+  @apply h-full px-4;
+  @apply text-center;
+  @apply min-h-[calc(100vh-200px)];
+  @apply relative;
+  @apply pb-24;
+
+  &.sidebar-collapsed {
+    @apply max-md:ml-0;
+  }
+
+  &.sidebar-expanded {
+    @apply max-md:ml-0;
+  }
+}
+
+.welcome-title {
+  @apply text-3xl md:text-2xl font-normal;
+  @apply text-gray-900 dark:text-gray-100;
+  @apply mb-8;
+  @apply max-w-2xl;
+  @apply leading-tight;
+  @apply tracking-tight;
+}
+
+.sidebar-toggle-btn-inline {
+  @apply w-9 h-9 rounded-lg;
+  @apply bg-white dark:bg-gray-800;
+  @apply border border-gray-200 dark:border-gray-700;
+  @apply shadow-sm hover:shadow-md;
+  @apply flex items-center justify-center;
+  @apply text-gray-600 dark:text-gray-400;
+  @apply hover:text-gray-900 dark:hover:text-gray-100;
+  @apply hover:bg-gray-50 dark:hover:bg-gray-700;
+  @apply transition-all duration-200;
+  @apply focus:outline-none;
+}

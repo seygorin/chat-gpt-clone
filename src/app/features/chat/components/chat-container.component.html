@@ -1,0 +1,52 @@
+<div class="chat-container">
+  <header class="chat-header">
+    <div class="flex items-center gap-3">
+      @if (isSidebarCollapsed() && isMobile()) {
+        <button
+          (click)="onToggleSidebar()"
+          class="sidebar-toggle-btn-inline"
+          aria-label="Open sidebar"
+        >
+          <i class="fas fa-bars w-5 h-5" aria-hidden="true"></i>
+        </button>
+      }
+      <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+        @if (activeChat(); as chat) {
+          {{ chat.title }}
+        } @else {
+          ChatGPT Clone
+        }
+      </h2>
+    </div>
+  </header>
+
+  <div class="chat-messages-area">
+    @if (hasActiveChat()) {
+      <app-message-list [messages]="activeMessages()" />
+    } @else {
+      <div
+        class="welcome-screen"
+        [class.sidebar-collapsed]="isSidebarCollapsed()"
+        [class.sidebar-expanded]="!isSidebarCollapsed()"
+      >
+        <h1 class="welcome-title">
+          {{ randomWelcomePhrase() }}
+        </h1>
+
+        <div class="welcome-input">
+          <app-message-input />
+        </div>
+      </div>
+    }
+  </div>
+</div>
+
+@if (hasActiveChat()) {
+  <div
+    class="chat-input-container"
+    [class.sidebar-collapsed]="isSidebarCollapsed()"
+    [class.sidebar-expanded]="!isSidebarCollapsed()"
+  >
+    <app-message-input />
+  </div>
+}
